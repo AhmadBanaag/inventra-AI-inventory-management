@@ -33,26 +33,27 @@
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
-  border-color: var(--color-primary);
+  background-color: var(--color-lime);
+  color: var(--color-dark);
+  border-color: var(--color-lime);
+  font-weight: var(--font-weight-semibold);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-  color: var(--color-text-inverse);
+  background-color: var(--color-secondary-hover);
+  border-color: var(--color-secondary-hover);
+  color: var(--color-dark);
 }
 
 .btn-secondary {
-  background-color: var(--color-surface);
+  background-color: transparent;
   color: var(--color-text-main);
   border-color: var(--color-border-subtle);
 }
 
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--color-surface-hover);
-  border-color: var(--color-border);
+  border-color: var(--color-primary);
 }
 
 .btn-danger {

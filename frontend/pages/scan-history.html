@@ -19,13 +19,32 @@
             <h1 class="page-title">Scan History</h1>
             <p class="page-description">Audit log of all uploaded inventory count sheets and verification statuses.</p>
           </div>
-          <div class="page-actions">
-            <a href="/pages/scan-inventory.html" class="btn btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-              <span>Scan New Sheet</span>
-            </a>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4);">
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center;">
+              <!-- Search -->
+              <input 
+                type="search" 
+                id="history-search" 
+                class="form-input" 
+                placeholder="Search by scan ID or status..." 
+                style="flex: 1; min-width: 200px; max-width: 360px;"
+              >
+
+              <!-- Date Filter -->
+              <select id="history-date-filter" class="form-select" style="max-width: 200px;">
+                <option value="">All Dates</option>
+                <option value="today">Today</option>
+                <option value="7days">Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="90days">Last 90 Days</option>
+              </select>
+
+              <span id="history-count-label" class="text-muted" style="font-size: var(--font-size-sm); margin-left: auto;">Loading...</span>
+            </div>
           </div>
         </div>
 

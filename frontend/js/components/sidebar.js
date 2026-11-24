@@ -21,11 +21,7 @@ function renderSidebar(activeKey = '') {
   const html = `
     <div class="sidebar-header">
       <a href="/pages/dashboard.html" class="sidebar-brand">
-        <div class="brand-icon">I</div>
-        <div>
-          <span class="brand-title">Inventra</span>
-          <span class="brand-tagline">Write. Snap. Sort.</span>
-        </div>
+        <span class="brand-title">Inventra</span>
       </a>
     </div>
 

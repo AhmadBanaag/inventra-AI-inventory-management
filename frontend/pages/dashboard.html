@@ -20,20 +20,7 @@
             <h1 class="page-title">Inventory Dashboard</h1>
             <p class="page-description">Overview of active stock levels, valuations, and low-stock warnings.</p>
           </div>
-          <div class="page-actions">
-            <a href="/pages/product-form.html" class="btn btn-secondary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-              <span>Add Product</span>
-            </a>
-            <a href="/pages/scan-inventory.html" class="btn btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm14 0h-4v2h2v4h2v-4h2v-2h-2zm-4 4h2v2h-2z"/>
-              </svg>
-              <span>Scan Sheet</span>
-            </a>
-          </div>
+          
         </div>
 
         <!-- Metric KPI Cards -->
@@ -89,71 +76,29 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: var(--space-6);">
-          <!-- Recent Products Section -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Recent Catalog Additions</h2>
-              <a href="/pages/inventory.html" class="btn btn-secondary btn-sm">View All</a>
-            </div>
-            <div class="card-body" style="padding: 0;">
-              <div id="recent-products-state" class="state-box">
-                <div class="spinner"></div>
-                <div class="state-title">Loading items...</div>
-              </div>
-              <div class="table-container" id="recent-products-container" style="display: none; border: none; box-shadow: none;">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Category</th>
-                      <th>Quantity</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="recent-products-tbody"></tbody>
-                </table>
-              </div>
-            </div>
+        <!-- Recent Products Section (Full Width) -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Recent Catalog Additions</h2>
+            <a href="/pages/inventory.html" class="btn btn-secondary btn-sm">View All</a>
           </div>
-
-          <!-- Quick Actions & Scan Guidance -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Quick Actions & Handwriting Flow</h2>
+          <div class="card-body" style="padding: 0;">
+            <div id="recent-products-state" class="state-box">
+              <div class="spinner"></div>
+              <div class="state-title">Loading items...</div>
             </div>
-            <div class="card-body">
-              <div style="display: flex; flex-direction: column; gap: var(--space-4);">
-                <div style="padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
-                  <h3 style="font-size: var(--font-size-base); margin-bottom: var(--space-1);">Print Handwriting Template</h3>
-                  <p class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--space-3);">
-                    Print a fresh A4/Letter count sheet to record stock levels manually on paper.
-                  </p>
-                  <a href="/pages/print-template.html" target="_blank" class="btn btn-secondary btn-sm">
-                    Open Print Template
-                  </a>
-                </div>
-
-                <div style="padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
-                  <h3 style="font-size: var(--font-size-base); margin-bottom: var(--space-1);">Upload Completed Sheet</h3>
-                  <p class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--space-3);">
-                    Take a photo with your mobile device or scanner and let Gemini transcribe it.
-                  </p>
-                  <a href="/pages/scan-inventory.html" class="btn btn-primary btn-sm">
-                    Upload & Scan Sheet
-                  </a>
-                </div>
-
-                <div style="padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
-                  <h3 style="font-size: var(--font-size-base); margin-bottom: var(--space-1);">Previous Scan Audit</h3>
-                  <p class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--space-3);">
-                    Review past sheet uploads and verification logs.
-                  </p>
-                  <a href="/pages/scan-history.html" class="btn btn-secondary btn-sm">
-                    View Scan History
-                  </a>
-                </div>
-              </div>
+            <div class="table-container" id="recent-products-container" style="display: none; border: none; box-shadow: none;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-products-tbody"></tbody>
+              </table>
             </div>
           </div>
         </div>

@@ -41,31 +41,11 @@
   text-decoration: none;
 }
 
-.brand-icon {
-  width: 32px;
-  height: 32px;
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-base);
-  border-radius: var(--radius-md);
-}
-
 .brand-title {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-main);
-  letter-spacing: -0.02em;
-}
-
-.brand-tagline {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-subtle);
-  display: block;
-  line-height: 1;
+  letter-spacing: -0.03em;
 }
 
 .sidebar-content {

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderNavbar('Scan Inventory');
 
   setupUploadHandlers();
+  setupGuidelinesModal();
 });
 
 function setupUploadHandlers() {
@@ -23,11 +24,23 @@ function setupUploadHandlers() {
 
   if (!dropzone || !fileInput) return;
 
-  dropzone.addEventListener('click', () => fileInput.click());
+  // Clicking the dropzone opens the guidelines modal first (if no file selected)
+  dropzone.addEventListener('click', () => {
+    if (!selectedFile) {
+      openGuidelinesModal();
+    } else {
+      fileInput.click();
+    }
+  });
+
   dropzone.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      fileInput.click();
+      if (!selectedFile) {
+        openGuidelinesModal();
+      } else {
+        fileInput.click();
+      }
     }
   });
 
@@ -70,6 +83,60 @@ function setupUploadHandlers() {
 
   if (form) {
     form.addEventListener('submit', handleUploadSubmit);
+  }
+}
+
+/* ── Photo Guidelines Modal ── */
+function setupGuidelinesModal() {
+  const modal = document.getElementById('guidelines-modal');
+  const closeBtn = document.getElementById('guidelines-modal-close');
+  if (!modal) return;
+
+  // Continue button
+  const continueBtn = document.getElementById('guidelines-continue-btn');
+  if (continueBtn) {
+    continueBtn.addEventListener('click', () => closeGuidelinesModal());
+  }
+
+  // Close on X button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => closeGuidelinesModal());
+  }
+
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeGuidelinesModal();
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeGuidelinesModal();
+    }
+  });
+}
+
+function openGuidelinesModal() {
+  const modal = document.getElementById('guidelines-modal');
+  if (modal) {
+    modal.classList.add('active');
+    // After the user reads guidelines, they can close and pick a file
+    const fileInput = document.getElementById('sheet-file-input');
+    // Add a one-time listener so after modal closes, the file picker opens
+    const handler = () => {
+      if (fileInput) fileInput.click();
+      modal.removeEventListener('modal-closed', handler);
+    };
+    modal.addEventListener('modal-closed', handler);
+  }
+}
+
+function closeGuidelinesModal() {
+  const modal = document.getElementById('guidelines-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    // Dispatch custom event so the file picker opens
+    modal.dispatchEvent(new CustomEvent('modal-closed'));
   }
 }
 

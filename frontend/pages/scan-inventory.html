@@ -9,7 +9,7 @@
     .upload-dropzone {
       border: 2px dashed var(--color-border-subtle);
       border-radius: var(--radius-lg);
-      padding: var(--space-8) var(--space-6);
+      padding: var(--space-10) var(--space-6);
       text-align: center;
       background-color: var(--color-surface);
       cursor: pointer;
@@ -28,8 +28,8 @@
     }
 
     .upload-icon {
-      width: 48px;
-      height: 48px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       background-color: var(--color-primary-subtle);
       color: var(--color-primary-text);
@@ -54,6 +54,76 @@
       border-radius: var(--radius-md);
       margin: 0 auto;
       display: block;
+    }
+
+    /* ── Photo Guidelines Modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-panel {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      max-width: 520px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: modalIn 0.25s ease-out;
+    }
+
+    .modal-header {
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-main);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .modal-close-btn:hover {
+      background-color: var(--color-surface-hover);
+      color: var(--color-text-main);
+    }
+
+    .modal-body {
+      padding: var(--space-6);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
   </style>
 </head>
@@ -80,80 +150,89 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6);">
-          <!-- Step 1: Guidance Card -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Photo Guidelines for Best AI Accuracy</h2>
-            </div>
-            <div class="card-body">
-              <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--font-size-sm);">
-                <li class="flex items-center gap-3">
-                  <span class="badge badge-success">&#10003;</span>
-                  <span><strong>High-contrast ink:</strong> Use dark blue or black ink.</span>
-                </li>
-                <li class="flex items-center gap-3">
-                  <span class="badge badge-success">&#10003;</span>
-                  <span><strong>Even lighting:</strong> Avoid harsh shadows across the text table.</span>
-                </li>
-                <li class="flex items-center gap-3">
-                  <span class="badge badge-success">&#10003;</span>
-                  <span><strong>Flat surface:</strong> Lay sheet flat; keep camera parallel to sheet.</span>
-                </li>
-                <li class="flex items-center gap-3">
-                  <span class="badge badge-success">&#10003;</span>
-                  <span><strong>All borders visible:</strong> Include all 4 outer table corners in the photo.</span>
-                </li>
-              </ul>
-
-              <div style="margin-top: var(--space-6); padding: var(--space-4); background-color: var(--color-bg); border-radius: var(--radius-md); font-size: var(--font-size-xs); color: var(--color-text-muted);">
-                <strong>Important:</strong> You will review every transcribed item on the verification screen before any updates are saved to your database.
-              </div>
-            </div>
+        <!-- Upload Card (Full Width) -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Upload Completed Sheet</h2>
           </div>
+          <div class="card-body">
+            <form id="upload-form">
+              <input type="file" id="sheet-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
 
-          <!-- Step 2: Upload Dropzone Card -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Upload Completed Sheet</h2>
-            </div>
-            <div class="card-body">
-              <form id="upload-form">
-                <input type="file" id="sheet-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
-
-                <div class="upload-dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop inventory photo here or click to browse">
-                  <div class="upload-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <strong style="font-size: var(--font-size-base); color: var(--color-text-main);">Click to upload or drag & drop</strong>
-                    <div class="text-subtle" style="font-size: var(--font-size-xs); margin-top: var(--space-1);">
-                      JPG, PNG, or WEBP (Max 10MB)
-                    </div>
+              <div class="upload-dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop inventory photo here or click to browse" style="min-height: 320px;">
+                <div class="upload-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong style="font-size: var(--font-size-lg); color: var(--color-text-main);">Click to upload or drag & drop</strong>
+                  <div class="text-subtle" style="font-size: var(--font-size-sm); margin-top: var(--space-2);">
+                    JPG, PNG, or WEBP (Max 10MB)
                   </div>
                 </div>
+              </div>
 
-                <!-- Preview Area -->
-                <div class="preview-container" id="preview-box">
-                  <img id="preview-img" class="preview-image" alt="Uploaded sheet preview">
-                  <div class="flex items-center justify-between" style="margin-top: var(--space-3);">
-                    <span id="preview-filename" class="text-muted" style="font-size: var(--font-size-xs);"></span>
-                    <button type="button" id="clear-file-btn" class="btn btn-outline-danger btn-sm">Remove</button>
-                  </div>
+              <!-- Preview Area -->
+              <div class="preview-container" id="preview-box">
+                <img id="preview-img" class="preview-image" alt="Uploaded sheet preview">
+                <div class="flex items-center justify-between" style="margin-top: var(--space-3);">
+                  <span id="preview-filename" class="text-muted" style="font-size: var(--font-size-xs);"></span>
+                  <button type="button" id="clear-file-btn" class="btn btn-outline-danger btn-sm">Remove</button>
                 </div>
+              </div>
 
-                <div style="margin-top: var(--space-6);">
-                  <button type="submit" id="process-btn" class="btn btn-primary btn-full" disabled>
-                    Process with Gemini AI
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div style="margin-top: var(--space-6);">
+                <button type="submit" id="process-btn" class="btn btn-primary btn-full" disabled>
+                  Process with Gemini AI
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- Photo Guidelines Modal -->
+  <div class="modal-backdrop" id="guidelines-modal">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="guidelines-modal-title">
+      <div class="modal-header">
+        <h2 id="guidelines-modal-title">Photo Guidelines for Best AI Accuracy</h2>
+        <button type="button" class="modal-close-btn" id="guidelines-modal-close" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--font-size-sm);">
+          <li class="flex items-center gap-3">
+            <span class="badge badge-success">&#10003;</span>
+            <span><strong>High-contrast ink:</strong> Use dark blue or black ink.</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="badge badge-success">&#10003;</span>
+            <span><strong>Even lighting:</strong> Avoid harsh shadows across the text table.</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="badge badge-success">&#10003;</span>
+            <span><strong>Flat surface:</strong> Lay sheet flat; keep camera parallel to sheet.</span>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="badge badge-success">&#10003;</span>
+            <span><strong>All borders visible:</strong> Include all 4 outer table corners in the photo.</span>
+          </li>
+        </ul>
+
+        <div style="margin-top: var(--space-6); padding: var(--space-4); background-color: var(--color-bg); border-radius: var(--radius-md); font-size: var(--font-size-xs); color: var(--color-text-muted);">
+          <strong>Important:</strong> You will review every transcribed item on the verification screen before any updates are saved to your database.
+        </div>
+
+        <button type="button" id="guidelines-continue-btn" class="btn btn-primary btn-full" style="margin-top: var(--space-6);">
+          Continue — Select Photo
+        </button>
+      </div>
     </div>
   </div>
 
