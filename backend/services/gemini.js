@@ -19,14 +19,11 @@ function fileToGenerativePart(filePath, mimeType) {
  */
 async function extractHandwrittenInventory(filePath, mimeType = 'image/jpeg') {
   if (!geminiModel) {
-    console.log('[Gemini Service] Model not configured. Using standard structured mock data.');
-    return [
-      { name: 'Hex Head Bolt M8x40', category: 'Fasteners', quantity: 50, unit_price: 0.45, confidence: 'high' },
-      { name: 'Stainless Washer 8mm', category: 'Fasteners', quantity: 200, unit_price: 0.15, confidence: 'high' },
-      { name: 'Nylon Lock Nut M8', category: 'Fasteners', quantity: 75, unit_price: 0.30, confidence: 'medium' },
-      { name: 'Threadlocker Blue 50ml', category: 'Adhesives', quantity: 6, unit_price: 8.50, confidence: 'high' },
-      { name: 'Safety Goggles Clear', category: 'PPE', quantity: 12, unit_price: 4.25, confidence: 'low' },
-    ];
+    throw new Error('Gemini API is not configured. Please set GEMINI_API_KEY in your .env file to enable AI handwriting recognition.');
+  }
+
+  if (!filePath || !fs.existsSync(filePath)) {
+    throw new Error('Count sheet image file is missing or unreadable.');
   }
 
   const prompt = `

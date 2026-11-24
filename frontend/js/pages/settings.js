@@ -27,7 +27,7 @@ function loadSettings() {
 
   // Load from localStorage or defaults
   const saved = JSON.parse(localStorage.getItem('inventra_settings') || '{}');
-  if (storeNameInput) storeNameInput.value = saved.storeName || 'Inventra Demo Store';
+  if (storeNameInput) storeNameInput.value = saved.storeName || '';
   if (currencySelect) currencySelect.value = saved.currency || '$';
   if (thresholdInput) thresholdInput.value = saved.defaultThreshold || 5;
   if (categoryInput) categoryInput.value = saved.defaultCategory || 'General';

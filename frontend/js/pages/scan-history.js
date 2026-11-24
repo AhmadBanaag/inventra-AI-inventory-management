@@ -19,14 +19,9 @@ async function loadScanHistory() {
     const scans = await api.get('/scans');
     renderHistory(scans || []);
   } catch (err) {
-    console.warn('API error, using demo scan logs:', err);
-    // Demo history
-    const demoScans = [
-      { id: 'scan-001', created_at: new Date(Date.now() - 3600000 * 2).toISOString(), total_items_detected: 14, total_items_saved: 14, status: 'completed' },
-      { id: 'scan-002', created_at: new Date(Date.now() - 3600000 * 24).toISOString(), total_items_detected: 8, total_items_saved: 8, status: 'completed' },
-      { id: 'scan-003', created_at: new Date(Date.now() - 3600000 * 48).toISOString(), total_items_detected: 10, total_items_saved: 0, status: 'discarded' },
-    ];
-    renderHistory(demoScans);
+    console.error('Failed to load scan history:', err);
+    notify.error('Unable to load scan history.');
+    renderHistory([]);
   } finally {
     if (loading) loading.style.display = 'none';
   }

@@ -130,10 +130,10 @@ async function handleUploadSubmit(e) {
       window.location.href = `/pages/ai-processing.html?scanId=${scanId}`;
     }, 600);
   } catch (err) {
-    notify.error(`Upload failed: ${err.message}. Running in local demo mode...`);
-    // Fallback demo redirect
-    setTimeout(() => {
-      window.location.href = `/pages/ai-processing.html?scanId=demo-scan-123`;
-    }, 800);
+    notify.error(`Upload failed: ${err.message}`);
+    if (processBtn) {
+      processBtn.disabled = false;
+      processBtn.textContent = 'Process with Gemini AI';
+    }
   }
 }

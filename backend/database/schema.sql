@@ -1,12 +1,12 @@
 -- ============================================================================
--- INVENTRA POSTGRESQL SCHEMA (Supabase Compatible)
--- Modular table definitions for products, handwriting scans, and store config
+-- INVENTRA POSTGRESQL SCHEMA (Supabase Production Ready)
+-- Architected for Relational Integrity, Batch Upserts, and Audit Tracking
 -- ============================================================================
 
--- Enable UUID extension
+-- 1. Enable UUID Extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. PRODUCTS TABLE
+-- 2. PRODUCTS TABLE (Catalog & Inventory)
 CREATE TABLE IF NOT EXISTS products (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
@@ -20,13 +20,14 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- Index frequently queried columns
+-- Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);
 CREATE INDEX IF NOT EXISTS idx_products_sku ON products(sku);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_quantity ON products(quantity);
+CREATE INDEX IF NOT EXISTS idx_products_category_qty ON products(category, quantity);
 
--- 2. SCANS TABLE (Audit history of all uploaded count sheets)
+-- 3. SCANS TABLE (Upload Log & AI OCR Processing Status)
 CREATE TABLE IF NOT EXISTS scans (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     image_url TEXT,
@@ -38,7 +39,10 @@ CREATE TABLE IF NOT EXISTS scans (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- 3. SCAN ITEMS TABLE (Individual line items extracted from sheets)
+CREATE INDEX IF NOT EXISTS idx_scans_status ON scans(status);
+CREATE INDEX IF NOT EXISTS idx_scans_created_at ON scans(created_at DESC);
+
+-- 4. SCAN ITEMS TABLE (Individual Handwritten Line Items Audit)
 CREATE TABLE IF NOT EXISTS scan_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     scan_id UUID REFERENCES scans(id) ON DELETE CASCADE,
@@ -51,7 +55,9 @@ CREATE TABLE IF NOT EXISTS scan_items (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- 4. STORE SETTINGS TABLE
+CREATE INDEX IF NOT EXISTS idx_scan_items_scan_id ON scan_items(scan_id);
+
+-- 5. STORE SETTINGS TABLE
 CREATE TABLE IF NOT EXISTS settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     store_name VARCHAR(255) DEFAULT 'Inventra Demo Store',
@@ -61,12 +67,31 @@ CREATE TABLE IF NOT EXISTS settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- Sample Seed Data for Instant Local Testing
-INSERT INTO products (name, sku, category, quantity, unit_price, low_stock_threshold, description)
-VALUES 
-('Hex Head Bolt M8x40', 'BLT-001', 'Fasteners', 120, 0.45, 30, 'Grade 8.8 zinc-plated bolt'),
-('Stainless Washer 8mm', 'WSH-002', 'Fasteners', 14, 0.15, 25, '316 Marine Grade Stainless Steel'),
-('Silicone Sealant Clear 300ml', 'ADH-003', 'Adhesives', 4, 6.50, 10, 'Waterproof neutral cure silicone'),
-('Heavy Duty Masking Tape 50mm', 'TAP-004', 'Consumables', 0, 3.20, 5, 'High adhesion crepe paper tape'),
-('Drill Bit Set 13-Piece HSS', 'TLS-005', 'Tools', 18, 15.00, 5, 'Titanium coated drill bits 1.5-6.5mm')
-ON CONFLICT (sku) DO NOTHING;
+-- 6. AUTOMATIC TIMESTAMP TRIGGER FUNCTION
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE 'plpgsql';
+
+-- Attach Triggers
+DROP TRIGGER IF EXISTS update_products_updated_at ON products;
+CREATE TRIGGER update_products_updated_at
+    BEFORE UPDATE ON products
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_scans_updated_at ON scans;
+CREATE TRIGGER update_scans_updated_at
+    BEFORE UPDATE ON scans
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_settings_updated_at ON settings;
+CREATE TRIGGER update_settings_updated_at
+    BEFORE UPDATE ON settings
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+

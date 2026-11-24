@@ -26,20 +26,9 @@ async function loadProduct(id) {
     currentProduct = await api.get(`/products/${id}`);
     renderDetails(currentProduct);
   } catch (err) {
-    console.warn('API error, product not found or server offline:', err);
-    // Demo fallback for mock inspection
-    currentProduct = {
-      id,
-      name: 'Standard Hex Bolt M8x40',
-      sku: 'BLT-001',
-      category: 'Fasteners',
-      quantity: 120,
-      unit_price: 0.45,
-      low_stock_threshold: 30,
-      description: 'Grade 8.8 zinc-plated steel hex head bolt for general assembly.',
-      created_at: new Date().toISOString(),
-    };
-    renderDetails(currentProduct);
+    console.error('Failed to load product:', err);
+    notify.error('Product not found.');
+    setTimeout(() => { window.location.href = '/pages/inventory.html'; }, 1200);
   }
 }
 

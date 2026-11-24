@@ -5,62 +5,56 @@ require('dotenv').config();
 
 const productsRouter = require('./routes/products');
 const dashboardRouter = require('./routes/dashboard');
-const { scanRouter, memoryScans } = require('./routes/scan');
+const scanRouter = require('./routes/scan');
+const errorHandler = require('./middleware/errorHandler');
 const supabase = require('./config/supabase');
 const { geminiModel } = require('./config/gemini');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Security & Parsing Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
-// Serve frontend static files
+// Static Assets
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Health & Diagnostic API
+// System Health & Diagnostics Endpoint
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    database: supabase ? 'Connected (Supabase)' : 'In-Memory (Local Dev Mode)',
-    gemini: geminiModel ? 'Configured (Live API)' : 'Mock OCR (Development Mode)',
+    database: supabase ? 'Connected (Supabase PostgreSQL)' : 'In-Memory (Local Development Mode)',
+    gemini: geminiModel ? 'Configured (Live Gemini API)' : 'Mock OCR (Development Mode)',
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
-// Mount Application REST APIs
+// REST API Routers
 app.use('/api/products', productsRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/scan', scanRouter);
-
-// Scan History endpoint
-app.get('/api/scans', (req, res) => {
-  res.json(memoryScans);
-});
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('[Server Error]:', err.stack);
-  res.status(500).json({
-    error: err.message || 'Internal Server Error',
-  });
-});
+app.use('/api/scans', scanRouter); // Alias for historical scan audit
 
 // Fallback for root route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
+// Centralized Error Handling Middleware (must be registered last)
+app.use(errorHandler);
+
 // Start Express Server
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`====================================================`);
-    console.log(`  Inventra Application Server running`);
+    console.log(`  Inventra Backend Server running`);
     console.log(`  URL: http://localhost:${PORT}`);
-    console.log(`  Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`  Supabase: ${supabase ? 'Active' : 'Offline (In-memory fallback)'}`);
+    console.log(`  Gemini:   ${geminiModel ? 'Active' : 'Mock mode'}`);
     console.log(`====================================================`);
   });
 }

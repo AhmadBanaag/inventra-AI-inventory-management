@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderNavbar('AI Processing');
 
   const params = new URLSearchParams(window.location.search);
-  const scanId = params.get('scanId') || 'demo-scan-123';
+  const scanId = params.get('scanId');
+
+  if (!scanId) {
+    notify.error('No scan ID provided. Redirecting to upload page...');
+    setTimeout(() => { window.location.href = '/pages/scan-inventory.html'; }, 1200);
+    return;
+  }
 
   await executeProcessingFlow(scanId);
 });
@@ -20,30 +26,24 @@ async function executeProcessingFlow(scanId) {
 
   try {
     // Stage 1: Document boundary detection
-    await delay(1000);
+    await delay(600);
     markStepDone(step2);
     markStepActive(step3);
 
     // Stage 2: Trigger Gemini OCR extraction endpoint
-    let result = null;
-    try {
-      result = await api.post(`/scan/${scanId}/process`);
-    } catch (apiErr) {
-      console.warn('Backend OCR endpoint pending, proceeding with verified sample stream:', apiErr);
-      await delay(1200);
-    }
+    const result = await api.post(`/scan/${scanId}/process`);
 
     markStepDone(step3);
     markStepActive(step4);
 
-    await delay(800);
+    await delay(400);
     markStepDone(step4);
 
     // Redirect to verification table
     notify.success('Handwriting extracted. Redirecting to verification table...');
     setTimeout(() => {
       window.location.href = `/pages/scan-results.html?scanId=${scanId}`;
-    }, 600);
+    }, 500);
   } catch (err) {
     showError(err.message || 'Unable to extract handwritten text.');
   }

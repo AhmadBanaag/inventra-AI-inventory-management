@@ -42,16 +42,9 @@ async function fetchProducts() {
     populateCategoryOptions(allProducts);
     applyFilters();
   } catch (err) {
-    console.warn('API error, falling back to local demo catalog:', err);
-    // Use fallback demo catalog if server is in development mode
-    allProducts = [
-      { id: '1', name: 'Standard Hex Bolt M8x40', sku: 'BLT-001', category: 'Fasteners', quantity: 120, unit_price: 0.45, low_stock_threshold: 30 },
-      { id: '2', name: 'Stainless Washer 8mm', sku: 'WSH-002', category: 'Fasteners', quantity: 14, unit_price: 0.15, low_stock_threshold: 25 },
-      { id: '3', name: 'Silicone Sealant Clear 300ml', sku: 'ADH-003', category: 'Adhesives', quantity: 4, unit_price: 6.50, low_stock_threshold: 10 },
-      { id: '4', name: 'Heavy Duty Masking Tape 50mm', sku: 'TAP-004', category: 'Consumables', quantity: 0, unit_price: 3.20, low_stock_threshold: 5 },
-      { id: '5', name: 'Drill Bit Set 13-Piece HSS', sku: 'TLS-005', category: 'Tools', quantity: 18, unit_price: 15.00, low_stock_threshold: 5 },
-    ];
-    populateCategoryOptions(allProducts);
+    console.error('Failed to fetch inventory:', err);
+    notify.error('Unable to load products from server.');
+    allProducts = [];
     applyFilters();
   } finally {
     if (loading) loading.style.display = 'none';

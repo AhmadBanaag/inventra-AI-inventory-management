@@ -10,7 +10,41 @@ Store managers and staff fill out a standardized printable inventory count sheet
 
 > This log is maintained throughout the project to track progress, file additions, and architectural decisions across team members.
 
-### Latest Update: November 24, 2026 — 16:51 (+08:00)
+### Latest Update: November 24, 2026 — 18:45 (+08:00)
+- **Developer & Role:** Ahmad — Backend Developer / System Architect
+- **Task:** Mock and Dummy Data Removal
+- **Summary:**
+  - Removed all hardcoded mock seed rows from [schema.sql](file:///backend/database/schema.sql).
+  - Emptied default in-memory arrays in [productService.js](file:///backend/services/productService.js) and [scanService.js](file:///backend/services/scanService.js) (`memoryProducts = []`, `memoryScans = []`).
+  - Removed fallback sample extraction items from `getScanById` and `gemini.js` (now strictly requires valid Gemini API configuration).
+  - Cleared frontend mock fallbacks across `inventory.js`, `product-details.js`, `scan-results.js`, and `scan-history.js`.
+  - Application now initializes in a 100% clean state, reflecting genuine user inputs and verified AI scan results.
+
+### Previous Update: November 24, 2026 — 18:35 (+08:00)
+- **Developer & Role:** Ahmad — Backend Developer / System Architect
+- **Phase:** Production Backend Refactoring, Input Validation, and System Integration
+- **Summary of Additions:**
+  - **Three-Tier Modular Architecture:** Decoupled monolithic routes into a clean separation of concerns:
+    - **Controllers (`backend/controllers/`):** `productController.js`, `scanController.js`, and `dashboardController.js` handling request/response flows.
+    - **Services (`backend/services/`):** `productService.js`, `scanService.js`, and `dashboardService.js` encapsulating business logic and Supabase database interactions.
+    - **Routes (`backend/routes/`):** Clean Express router mapping paths to controllers and validation middleware.
+  - **Input Validation & Sanitization Middleware (`backend/middleware/validator.js`):**
+    - Enforces non-empty string constraints and length bounds on product names.
+    - Enforces non-negative integers for quantities and alert thresholds.
+    - Enforces non-negative decimals for unit prices.
+    - Strictly validates batch items during scan verification to prevent corrupt database inserts.
+  - **Centralized Error Handler (`backend/middleware/errorHandler.js`):**
+    - Standardized error codes and messages for Multer upload issues, malformed JSON bodies, and unhandled exceptions.
+    - Response envelope utilities in `backend/utils/apiResponse.js`.
+  - **Batch Upsert & Verification Gateway:**
+    - Implemented `batchUpsertVerifiedProducts` supporting both additive restocking (`?mode=additive`, default) and full physical audit counts (`?mode=overwrite`).
+    - Guarantees unverified AI data never touches the catalog without explicit verification approval.
+  - **PostgreSQL / Supabase Schema Enhancements (`backend/database/schema.sql`):**
+    - Added automated `updated_at` PL/pgSQL triggers across `products`, `scans`, and `settings`.
+    - Added composite performance index on `products(category, quantity)` for fast low-stock queries.
+  - **Automated Verification:** Executed a 16-test suite covering negative validation (400 / 422), CRUD operations, stock incrementing, and deletion (404). 16/16 tests passed.
+
+### Previous Update: November 24, 2026 — 16:51 (+08:00)
 - **Phase:** Core Application Architecture, Page Scaffolding, and Service Integration.
 - **Summary of Additions:**
   - **Shared Design System:** Centralized design tokens ([variables.css](file:///frontend/css/variables.css)), app layout shell ([layout.css](file:///frontend/css/layout.css)), reusable UI components ([components.css](file:///frontend/css/components.css)), and main stylesheet ([main.css](file:///frontend/css/main.css)).

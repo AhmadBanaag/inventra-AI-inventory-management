@@ -11,10 +11,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderNavbar('Verification');
 
   const params = new URLSearchParams(window.location.search);
-  activeScanId = params.get('scanId') || 'demo-scan-123';
+  activeScanId = params.get('scanId');
 
   const scanIdLabel = document.getElementById('scan-id-label');
-  if (scanIdLabel) scanIdLabel.textContent = `Scan #${activeScanId}`;
+  if (scanIdLabel) scanIdLabel.textContent = activeScanId ? `Scan #${activeScanId}` : 'No Active Scan';
+
+  if (!activeScanId) {
+    notify.error('No scan record specified. Please select a scan from history or upload a sheet.');
+    return;
+  }
 
   setupActions();
   await loadScanResults(activeScanId);
@@ -26,15 +31,9 @@ async function loadScanResults(scanId) {
     extractedRows = data.items || [];
     renderRows();
   } catch (err) {
-    console.warn('Scan API not populated, loading demo extracted set:', err);
-    // Verified starter items representing Gemini OCR output from standard sheet
-    extractedRows = [
-      { id: 1, name: 'Hex Bolt M8x40', category: 'Fasteners', quantity: 50, unit_price: 0.45, confidence: 'high' },
-      { id: 2, name: 'Stainless Washer 8mm', category: 'Fasteners', quantity: 200, unit_price: 0.15, confidence: 'high' },
-      { id: 3, name: 'Nylon Lock Nut M8', category: 'Fasteners', quantity: 75, unit_price: 0.30, confidence: 'medium' },
-      { id: 4, name: 'Threadlocker Blue 50ml', category: 'Adhesives', quantity: 6, unit_price: 8.50, confidence: 'high' },
-      { id: 5, name: 'Safety Goggles Clear', category: 'PPE', quantity: 12, unit_price: 4.25, confidence: 'low' },
-    ];
+    console.error('Failed to load scan results:', err);
+    notify.error('Unable to load scan results. Record not found.');
+    extractedRows = [];
     renderRows();
   }
 }
