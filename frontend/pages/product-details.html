@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details — Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <div class="flex items-center gap-3">
+              <a href="/pages/inventory.html" class="btn btn-secondary btn-sm">&larr; Back to Inventory</a>
+              <span id="product-status-badge" class="badge badge-neutral">Loading...</span>
+            </div>
+            <h1 class="page-title" id="product-title" style="margin-top: var(--space-2);">Loading Product...</h1>
+            <p class="page-description" id="product-sku-subtitle">SKU: -</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" id="delete-btn" class="btn btn-outline-danger">Delete Product</button>
+            <a href="#" id="edit-link" class="btn btn-primary">Edit Product</a>
+          </div>
+        </div>
+
+        <!-- Product Information Card -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6);">
+          <!-- Stock Information & Quick Adjustment -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Stock Level & Quick Adjustment</h2>
+            </div>
+            <div class="card-body">
+              <div style="text-align: center; padding: var(--space-6) 0;">
+                <div class="text-subtle" style="font-size: var(--font-size-xs); text-transform: uppercase;">Current Stock</div>
+                <div id="product-qty-display" style="font-size: 3.5rem; font-weight: 700; color: var(--color-text-main);">-</div>
+                <div id="product-threshold-hint" class="text-muted" style="font-size: var(--font-size-xs);">Reorder threshold: -</div>
+              </div>
+
+              <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-4);">
+                <label class="form-label" style="margin-bottom: var(--space-2);">Quick Stock Adjustment</label>
+                <div class="flex items-center gap-2">
+                  <button type="button" id="adjust-minus-btn" class="btn btn-secondary btn-sm" style="flex: 1;">-1 Unit</button>
+                  <button type="button" id="adjust-plus-btn" class="btn btn-secondary btn-sm" style="flex: 1;">+1 Unit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Details Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Product Details</h2>
+            </div>
+            <div class="card-body">
+              <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-sm);">
+                <tbody>
+                  <tr style="border-bottom: 1px solid var(--color-border);">
+                    <td class="text-muted" style="padding: var(--space-3) 0; width: 140px;">Category</td>
+                    <td id="detail-category" class="text-bold" style="padding: var(--space-3) 0;">-</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--color-border);">
+                    <td class="text-muted" style="padding: var(--space-3) 0;">Unit Price</td>
+                    <td id="detail-price" class="text-bold" style="padding: var(--space-3) 0;">-</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--color-border);">
+                    <td class="text-muted" style="padding: var(--space-3) 0;">Total Value</td>
+                    <td id="detail-total-value" class="text-bold" style="padding: var(--space-3) 0;">-</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--color-border);">
+                    <td class="text-muted" style="padding: var(--space-3) 0;">Date Created</td>
+                    <td id="detail-created" style="padding: var(--space-3) 0;">-</td>
+                  </tr>
+                  <tr>
+                    <td class="text-muted" style="padding: var(--space-3) 0; vertical-align: top;">Description</td>
+                    <td id="detail-description" style="padding: var(--space-3) 0; color: var(--color-text-muted);">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/product-details.js"></script>
+</body>
+</html>

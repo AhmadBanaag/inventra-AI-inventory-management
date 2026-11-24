@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan History — Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Scan History</h1>
+            <p class="page-description">Audit log of all uploaded inventory count sheets and verification statuses.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/pages/scan-inventory.html" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              <span>Scan New Sheet</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div id="history-loading-state" class="state-box">
+            <div class="spinner"></div>
+            <div class="state-title">Loading history...</div>
+          </div>
+
+          <div id="history-empty-state" class="state-box" style="display: none;">
+            <div class="state-title">No scans recorded yet</div>
+            <div class="state-description">Upload your first handwritten count sheet to see audit history here.</div>
+          </div>
+
+          <table class="data-table" id="history-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Scan Date</th>
+                <th>Sheet Identifier</th>
+                <th>Items Detected</th>
+                <th>Items Verified</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/scan-history.js"></script>
+</body>
+</html>

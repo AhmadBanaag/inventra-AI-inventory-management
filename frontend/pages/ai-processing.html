@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Processing — Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .processing-container {
+      max-width: 600px;
+      margin: var(--space-12) auto;
+      text-align: center;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-progress-list {
+      margin: var(--space-8) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      text-align: left;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    .step-item.active {
+      color: var(--color-text-main);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .step-item.done {
+      color: var(--color-success-text);
+    }
+
+    .step-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      flex-shrink: 0;
+    }
+
+    .step-item.active .step-indicator {
+      border-color: var(--color-primary);
+      background-color: var(--color-primary-subtle);
+      color: var(--color-primary-text);
+    }
+
+    .step-item.done .step-indicator {
+      border-color: var(--color-success);
+      background-color: var(--color-success-subtle);
+      color: var(--color-success-text);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+
+      <main class="app-main">
+        <div class="processing-container">
+          <div class="spinner" style="margin: 0 auto var(--space-4);"></div>
+          <h1 class="page-title" style="font-size: var(--font-size-xl);">Analyzing Handwritten Sheet</h1>
+          <p class="text-muted" style="font-size: var(--font-size-sm); margin-top: var(--space-1);">
+            Google Gemini Multimodal Vision is reading table rows and handwritten text.
+          </p>
+
+          <div class="step-progress-list">
+            <div class="step-item done" id="step-1">
+              <span class="step-indicator">&#10003;</span>
+              <span>1. Image upload received and validated</span>
+            </div>
+            <div class="step-item active" id="step-2">
+              <span class="step-indicator">2</span>
+              <span>2. Detecting sheet layout and grid coordinates</span>
+            </div>
+            <div class="step-item" id="step-3">
+              <span class="step-indicator">3</span>
+              <span>3. Transcribing handwritten product names & quantities</span>
+            </div>
+            <div class="step-item" id="step-4">
+              <span class="step-indicator">4</span>
+              <span>4. Formatting structured verification data</span>
+            </div>
+          </div>
+
+          <div id="processing-error-box" style="display: none; padding: var(--space-4); background-color: var(--color-danger-subtle); border-radius: var(--radius-md); margin-top: var(--space-4);">
+            <strong style="color: var(--color-danger-text);">Analysis Incomplete:</strong>
+            <p id="processing-error-msg" style="font-size: var(--font-size-xs); color: var(--color-danger-text); margin-top: var(--space-1);"></p>
+            <div class="flex justify-center gap-3" style="margin-top: var(--space-3);">
+              <a href="/pages/scan-inventory.html" class="btn btn-secondary btn-sm">Upload Clearer Photo</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/ai-processing.js"></script>
+</body>
+</html>

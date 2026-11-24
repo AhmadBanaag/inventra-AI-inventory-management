@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventra — Write. Snap. Sort. Smart Inventory for Small Businesses</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    /* Landing page specific layout */
+    .landing-header {
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-4) var(--space-8);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .landing-hero {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-12) var(--space-6);
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      background-color: var(--color-primary-subtle);
+      color: var(--color-primary-text);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-4);
+    }
+
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text-main);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-4);
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-lg);
+      color: var(--color-text-muted);
+      max-width: 680px;
+      margin: 0 auto var(--space-8);
+      line-height: var(--line-height-relaxed);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .workflow-section {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6) var(--space-12);
+    }
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+      margin-top: var(--space-8);
+    }
+
+    .workflow-step {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background-color: var(--color-secondary-subtle);
+      color: var(--color-secondary-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-4);
+    }
+
+    .workflow-step h3 {
+      font-size: var(--font-size-lg);
+      margin-bottom: var(--space-2);
+    }
+
+    .landing-footer {
+      border-top: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      padding: var(--space-8) var(--space-6);
+      text-align: center;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-subtle);
+    }
+  </style>
+</head>
+<body>
+  <header class="landing-header">
+    <a href="/index.html" class="sidebar-brand">
+      <div class="brand-icon">I</div>
+      <div>
+        <span class="brand-title">Inventra</span>
+        <span class="brand-tagline">Write. Snap. Sort.</span>
+      </div>
+    </a>
+
+    <div class="flex items-center gap-3">
+      <a href="/pages/print-template.html" target="_blank" class="btn btn-secondary btn-sm">Print Sheet</a>
+      <a href="/pages/dashboard.html" class="btn btn-primary btn-sm">Open App</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="landing-hero">
+      <div class="hero-badge">Small Business Inventory Simplified</div>
+      <h1 class="hero-title">Physical Pen & Paper Speed.<br>Digital Database Accuracy.</h1>
+      <p class="hero-subtitle">
+        Write inventory counts on a standardized printable template, snap a quick photo with your phone, and let Google Gemini AI recognize and sort your stock with complete verification.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/pages/dashboard.html" class="btn btn-primary btn-lg">Launch Inventra Dashboard</a>
+        <a href="/pages/print-template.html" target="_blank" class="btn btn-secondary btn-lg">Download Printable Sheet</a>
+      </div>
+    </section>
+
+    <section class="workflow-section">
+      <div style="text-align: center;">
+        <h2>How Inventra Works</h2>
+        <p class="text-muted" style="margin-top: var(--space-2);">No expensive barcode guns or complex software on the warehouse floor.</p>
+      </div>
+
+      <div class="workflow-grid">
+        <div class="workflow-step">
+          <div class="step-number">1</div>
+          <h3>1. Write</h3>
+          <p class="text-muted">
+            Print our standardized inventory grid. Walk your stockroom shelves and write product names, quantities, and categories with a standard pen.
+          </p>
+        </div>
+
+        <div class="workflow-step">
+          <div class="step-number">2</div>
+          <h3>2. Snap</h3>
+          <p class="text-muted">
+            Take a clear photo of the handwritten page with your phone camera or document scanner and upload it directly into Inventra.
+          </p>
+        </div>
+
+        <div class="workflow-step">
+          <div class="step-number">3</div>
+          <h3>3. Sort & Verify</h3>
+          <p class="text-muted">
+            Gemini AI extracts the handwritten text into structured records. Review the side-by-side verification table, make any corrections, and commit to inventory.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <p>Inventra &copy; 2026. Built with Vanilla JavaScript, Express.js, Supabase, and Google Gemini.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Inventory — Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">My Inventory</h1>
+            <p class="page-description">Manage and monitor all catalog products, quantities, and stock alerts.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/pages/scan-inventory.html" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm14 0h-4v2h2v4h2v-4h2v-2h-2zm-4 4h2v2h-2z"/>
+              </svg>
+              <span>Scan Sheet</span>
+            </a>
+            <a href="/pages/product-form.html" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              <span>Add Product</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4);">
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; justify-content: space-between;">
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); flex: 1; min-width: 280px;">
+                <!-- Search -->
+                <input 
+                  type="search" 
+                  id="inventory-search" 
+                  class="form-input" 
+                  placeholder="Search by product name or SKU..." 
+                  style="max-width: 320px;"
+                >
+
+                <!-- Category Filter -->
+                <select id="category-filter" class="form-select" style="max-width: 180px;">
+                  <option value="">All Categories</option>
+                </select>
+
+                <!-- Stock Status Filter -->
+                <select id="status-filter" class="form-select" style="max-width: 180px;">
+                  <option value="">All Statuses</option>
+                  <option value="in_stock">In Stock</option>
+                  <option value="low_stock">Low Stock</option>
+                  <option value="out_of_stock">Out of Stock</option>
+                </select>
+              </div>
+
+              <div>
+                <span id="product-count-label" class="text-muted" style="font-size: var(--font-size-sm);">Loading products...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Data Table -->
+        <div class="table-container">
+          <div id="table-loading-state" class="state-box">
+            <div class="spinner"></div>
+            <div class="state-title">Loading inventory...</div>
+          </div>
+
+          <div id="table-empty-state" class="state-box" style="display: none;">
+            <div class="state-title">No products found</div>
+            <div class="state-description">Try adjusting your search criteria, or add your first product using the buttons above.</div>
+          </div>
+
+          <table class="data-table" id="inventory-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Value</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-tbody"></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/inventory.js"></script>
+</body>
+</html>
