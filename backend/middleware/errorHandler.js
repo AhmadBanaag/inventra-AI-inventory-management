@@ -11,7 +11,7 @@ function errorHandler(err, req, res, next) {
   // Handle Multer upload errors
   if (err.name === 'MulterError') {
     if (err.code === 'LIMIT_FILE_SIZE') {
-      return error(res, 'Uploaded image exceeds the 10MB size limit.', 400);
+      return error(res, 'The image must be 8 MB or smaller.', 413);
     }
     return error(res, `File upload error: ${err.message}`, 400);
   }

@@ -7,6 +7,8 @@ const fs = require('fs');
 const scanController = require('../controllers/scanController');
 const { validateVerifiedScan } = require('../middleware/validator');
 
+const supportedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -24,12 +26,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    if (supportedImageTypes.has(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files (JPG, PNG, WEBP) are allowed.'), false);
+      const error = new Error('Upload a JPEG, PNG, or WebP image.');
+      error.statusCode = 415;
+      error.code = 'UNSUPPORTED_IMAGE_TYPE';
+      cb(error, false);
     }
   },
 });

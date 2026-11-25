@@ -59,7 +59,7 @@ Store managers and staff fill out a standardized printable inventory count sheet
 ### Initial Setup: November 22, 2026 — 20:50 (+08:00)
 - **Phase:** Repository initialization and modular folder scaffolding.
 - Created standard directory layout (`frontend/`, `backend/`), initialized `package.json`, `.gitignore`, and `.env.example`.
-- Installed backend dependencies (`express`, `@supabase/supabase-js`, `@google/generative-ai`, `multer`, `cors`, `dotenv`).
+- Backend dependencies include `express`, `@supabase/supabase-js`, `@google/genai`, `multer`, `cors`, and `dotenv`.
 
 ---
 
@@ -71,7 +71,7 @@ Store managers and staff fill out a standardized printable inventory count sheet
 | **API Client** | Fetch API | Centralized, asynchronous client layer with JSON parsing and error handling. |
 | **Backend** | Node.js, Express.js | REST API architecture handling routing, file uploads, and middleware. |
 | **Database** | Supabase (PostgreSQL) | Relational database storing product catalogs, scan logs, and store settings. |
-| **AI Integration** | Google Gemini API (`gemini-1.5-flash`) | Multimodal vision model extracting handwritten tabular items into structured JSON. |
+| **AI Integration** | Google Gemini API (`gemini-3.1-flash-lite` by default) | Multimodal vision model extracting handwritten tabular items into structured JSON. |
 
 ---
 

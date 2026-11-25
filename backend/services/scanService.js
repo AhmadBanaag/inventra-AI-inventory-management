@@ -5,6 +5,8 @@
 
 const supabase = require('../config/supabase');
 const { extractHandwrittenInventory } = require('./gemini');
+const fs = require('fs');
+const { detectImageMimeType } = require('../utils/image');
 
 // In-memory scans store for development when Supabase is offline
 let memoryScans = [];
@@ -13,9 +15,7 @@ let memoryScans = [];
  * Record a newly uploaded sheet image
  */
 async function createScan(fileData) {
-  const scanId = `scan-${Date.now()}`;
   const scanPayload = {
-    id: scanId,
     image_url: fileData.path || fileData.filename,
     total_items_detected: 0,
     total_items_saved: 0,
@@ -30,12 +30,18 @@ async function createScan(fileData) {
     if (error) {
       console.warn('[ScanService] Supabase insert failed, using memory fallback:', error.message);
     } else {
-      return data;
+      return {
+        ...data,
+        filePath: fileData.path,
+        filename: fileData.filename,
+        mimeType: fileData.mimetype,
+      };
     }
   }
 
   const record = {
     ...scanPayload,
+    id: `scan-${Date.now()}`,
     filePath: fileData.path,
     filename: fileData.filename,
     mimeType: fileData.mimetype,
@@ -55,6 +61,7 @@ async function getScanById(id) {
     if (!error && data) {
       return {
         ...data,
+        filePath: data.image_url,
         items: data.raw_ai_output?.items || [],
       };
     }
@@ -76,7 +83,14 @@ async function getScanById(id) {
 async function processScanWithAI(id) {
   const scan = await getScanById(id);
   const filePath = scan.filePath || null;
-  const mimeType = scan.mimeType || 'image/jpeg';
+  const imageBuffer = filePath ? fs.readFileSync(filePath) : null;
+  const mimeType = scan.mimeType || (imageBuffer && detectImageMimeType(imageBuffer));
+
+  if (!mimeType) {
+    const error = new Error('The saved scan is not a supported JPEG, PNG, or WebP image.');
+    error.statusCode = 415;
+    throw error;
+  }
 
   const items = await extractHandwrittenInventory(filePath, mimeType);
 

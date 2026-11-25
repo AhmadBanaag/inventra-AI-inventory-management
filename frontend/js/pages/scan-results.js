@@ -1,184 +1,120 @@
-/**
- * INVENTRA SCAN RESULTS & VERIFICATION CONTROLLER (scan-results.js)
- * Implements mandatory user review and editing before database commit
- */
+const resultsMessage = document.querySelector('#results-message');
+const resultsContainer = document.querySelector('#results-container');
+const modelLabel = document.querySelector('#model-label');
 
-let extractedRows = [];
-let activeScanId = null;
+let scanData;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  renderSidebar('scan');
+document.addEventListener('DOMContentLoaded', () => {
   renderNavbar('Verification');
+  renderSidebar('scan');
 
-  const params = new URLSearchParams(window.location.search);
-  activeScanId = params.get('scanId');
-
-  const scanIdLabel = document.getElementById('scan-id-label');
-  if (scanIdLabel) scanIdLabel.textContent = activeScanId ? `Scan #${activeScanId}` : 'No Active Scan';
-
-  if (!activeScanId) {
-    notify.error('No scan record specified. Please select a scan from history or upload a sheet.');
-    return;
+  try {
+    scanData = JSON.parse(sessionStorage.getItem('inventra-scan-results') || 'null');
+  } catch (error) {
+    scanData = null;
   }
 
-  setupActions();
-  await loadScanResults(activeScanId);
+  if (!scanData || !Array.isArray(scanData.items)) {
+    resultsMessage.textContent = 'There are no scan results to review. Start by uploading an inventory image.';
+  } else {
+    modelLabel.textContent = `Processed with ${scanData.model || 'Gemini'}`;
+    renderItems(scanData.items);
+  }
 });
 
-async function loadScanResults(scanId) {
-  try {
-    const data = await api.get(`/scan/${scanId}`);
-    extractedRows = data.items || [];
-    renderRows();
-  } catch (err) {
-    console.error('Failed to load scan results:', err);
-    notify.error('Unable to load scan results. Record not found.');
-    extractedRows = [];
-    renderRows();
-  }
-}
-
-function renderRows() {
-  const tbody = document.getElementById('verification-tbody');
-  const countLabel = document.getElementById('item-count');
-  if (countLabel) countLabel.textContent = extractedRows.length;
-  if (!tbody) return;
-
-  tbody.innerHTML = extractedRows.map((item, index) => {
-    const isUncertain = item.confidence === 'low';
-    return `
-      <tr data-index="${index}">
-        <td>
-          <input 
-            type="text" 
-            class="editable-input ${isUncertain ? 'low-confidence' : ''}" 
-            value="${escapeHtml(item.name || '')}" 
-            placeholder="Item description"
-            onchange="updateRowField(${index}, 'name', this.value)"
-          >
-        </td>
-        <td>
-          <input 
-            type="text" 
-            class="editable-input" 
-            value="${escapeHtml(item.category || 'General')}" 
-            placeholder="Category"
-            onchange="updateRowField(${index}, 'category', this.value)"
-          >
-        </td>
-        <td>
-          <input 
-            type="number" 
-            class="editable-input" 
-            min="0"
-            value="${item.quantity ?? 0}" 
-            onchange="updateRowField(${index}, 'quantity', Number(this.value))"
-          >
-        </td>
-        <td>
-          <input 
-            type="number" 
-            class="editable-input" 
-            min="0" 
-            step="0.01"
-            value="${(item.unit_price ?? 0).toFixed(2)}" 
-            onchange="updateRowField(${index}, 'unit_price', Number(this.value))"
-          >
-        </td>
-        <td style="text-align: center;">
-          <button type="button" class="btn btn-outline-danger btn-sm" style="padding: 0 8px; min-height: 32px;" onclick="removeRow(${index})" title="Delete entry">
-            &times;
-          </button>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
-
-function updateRowField(index, field, value) {
-  if (extractedRows[index]) {
-    extractedRows[index][field] = value;
-  }
-}
-
-function removeRow(index) {
-  extractedRows.splice(index, 1);
-  renderRows();
-}
-
-function addEmptyRow() {
-  extractedRows.push({
-    id: Date.now(),
-    name: '',
-    category: 'General',
-    quantity: 1,
-    unit_price: 0.00,
-    confidence: 'manual',
-  });
-  renderRows();
-}
-
-function setupActions() {
-  const addBtn = document.getElementById('add-row-btn');
-  if (addBtn) addBtn.addEventListener('click', addEmptyRow);
-
-  const discardBtn = document.getElementById('discard-scan-btn');
-  if (discardBtn) {
-    discardBtn.addEventListener('click', () => {
-      if (confirm('Discard this scan? Extracted items will not be saved.')) {
-        window.location.href = '/pages/dashboard.html';
-      }
-    });
-  }
-
-  const confirmBtn = document.getElementById('confirm-save-btn');
-  if (confirmBtn) {
-    confirmBtn.addEventListener('click', handleSaveVerified);
-  }
-}
-
-async function handleSaveVerified() {
-  if (extractedRows.length === 0) {
-    notify.error('No items to save. Add at least one item or discard.');
+function renderItems(items) {
+  if (items.length === 0) {
+    resultsMessage.textContent = 'No product rows were detected. Try a clearer, well-lit image with the full sheet in frame.';
     return;
   }
 
-  // Basic validation
-  for (const item of extractedRows) {
-    if (!item.name || !item.name.trim()) {
-      notify.error('All items must have a valid name.');
-      return;
-    }
-  }
+  const table = document.createElement('table');
+  table.className = 'data-table results-table';
+  const header = document.createElement('thead');
+  const headingRow = document.createElement('tr');
 
-  const confirmBtn = document.getElementById('confirm-save-btn');
-  if (confirmBtn) {
-    confirmBtn.disabled = true;
-    confirmBtn.textContent = 'Saving to Inventory...';
-  }
+  ['Product', 'Quantity', 'Unit', 'Category', 'AI estimate', 'Verification'].forEach((label) => {
+    const cell = document.createElement('th');
+    cell.scope = 'col';
+    cell.textContent = label;
+    headingRow.append(cell);
+  });
+  header.append(headingRow);
 
-  try {
-    await api.post(`/scan/${activeScanId}/verify`, { items: extractedRows });
-    notify.success(`${extractedRows.length} items successfully verified and added to inventory.`);
-    setTimeout(() => {
-      window.location.href = '/pages/inventory.html';
-    }, 700);
-  } catch (err) {
-    notify.error(`Save failed: ${err.message}. (Saved to local memory for demo)`);
-    setTimeout(() => {
-      window.location.href = '/pages/inventory.html';
-    }, 1000);
-  }
+  const body = document.createElement('tbody');
+  items.forEach((item, index) => {
+    const row = document.createElement('tr');
+    if (item.needsReview) row.classList.add('needs-review');
+
+    row.append(
+      createTextCell(item.name, `Product name for item ${index + 1}`),
+      createTextCell(item.quantity === null ? '' : String(item.quantity), `Quantity for item ${index + 1}`, 'number'),
+      createTextCell(item.unit, `Unit for item ${index + 1}`),
+      createCategoryCell(item.category, index),
+      createConfidenceCell(item.confidence),
+      createReviewCell(item),
+    );
+    body.append(row);
+  });
+
+  table.append(header, body);
+  resultsContainer.replaceChildren(table);
+  resultsContainer.hidden = false;
+  resultsMessage.textContent = `${items.length} item${items.length === 1 ? '' : 's'} extracted. Review and correct each field against your original sheet.`;
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+function createTextCell(value, label, type = 'text') {
+  const cell = document.createElement('td');
+  const input = document.createElement('input');
+  input.type = type;
+  input.value = value === null || value === undefined ? '' : String(value);
+  input.setAttribute('aria-label', label);
+  if (type === 'number') {
+    input.min = '0';
+    input.step = 'any';
+  }
+  cell.append(input);
+  return cell;
 }
 
-window.updateRowField = updateRowField;
-window.removeRow = removeRow;
+function createCategoryCell(category, index) {
+  const cell = document.createElement('td');
+  const select = document.createElement('select');
+  select.setAttribute('aria-label', `Category for item ${index + 1}`);
+  const categories = Array.isArray(scanData.categories) ? scanData.categories : [];
+
+  categories.forEach((optionValue) => {
+    const option = document.createElement('option');
+    option.value = optionValue;
+    option.textContent = optionValue;
+    option.selected = optionValue === category;
+    select.append(option);
+  });
+
+  cell.append(select);
+  return cell;
+}
+
+function createConfidenceCell(confidence) {
+  const cell = document.createElement('td');
+  const percent = Number.isFinite(confidence) ? Math.round(confidence * 100) : 0;
+  cell.textContent = `${percent}%`;
+  cell.className = percent < 75 ? 'confidence-low' : 'confidence-high';
+  return cell;
+}
+
+function createReviewCell(item) {
+  const cell = document.createElement('td');
+  const status = document.createElement('span');
+  status.className = item.needsReview ? 'review-badge' : 'clear-badge';
+  status.textContent = item.needsReview ? 'Review carefully' : 'Verify manually';
+  cell.append(status);
+
+  if (item.reviewReason) {
+    const reason = document.createElement('small');
+    reason.textContent = item.reviewReason;
+    cell.append(reason);
+  }
+
+  return cell;
+}

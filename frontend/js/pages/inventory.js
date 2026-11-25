@@ -56,7 +56,7 @@ function populateCategoryOptions(products) {
   if (!catFilter) return;
 
   const categories = [...new Set(products.map(p => p.category || 'General'))].sort();
-  catFilter.innerHTML = '<option value="">All Categories</option>' + 
+  catFilter.innerHTML = '<option value="">All Categories</option>' +
     categories.map(c => `<option value="${c}">${c}</option>`).join('');
 }
 

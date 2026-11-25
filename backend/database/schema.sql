@@ -82,7 +82,6 @@ CREATE TRIGGER update_products_updated_at
     BEFORE UPDATE ON products
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_scans_updated_at ON scans;
 CREATE TRIGGER update_scans_updated_at
     BEFORE UPDATE ON scans
@@ -94,4 +93,3 @@ CREATE TRIGGER update_settings_updated_at
     BEFORE UPDATE ON settings
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-

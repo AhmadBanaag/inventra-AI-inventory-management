@@ -1,25 +1,21 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-require('dotenv').config();
+const { GoogleGenAI } = require('@google/genai');
 
-const apiKey = process.env.GEMINI_API_KEY;
+const DEFAULT_MODEL = 'gemini-3.1-flash-lite';
 
-let genAI = null;
-let geminiModel = null;
+function getGeminiClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
 
-if (apiKey && !apiKey.includes('your-gemini')) {
-  try {
-    genAI = new GoogleGenerativeAI(apiKey);
-    // Use gemini-1.5-flash for fast and accurate multimodal extraction
-    geminiModel = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    console.log('[Gemini] Initialized Google Gemini client.');
-  } catch (err) {
-    console.warn('[Gemini] Failed to initialize Gemini client:', err.message);
+  if (!apiKey || apiKey === 'your-gemini-api-key') {
+    const error = new Error('Gemini is not configured. Set GEMINI_API_KEY in the backend environment.');
+    error.statusCode = 503;
+    error.code = 'GEMINI_NOT_CONFIGURED';
+    throw error;
   }
-} else {
-  console.log('[Gemini] GEMINI_API_KEY not configured in .env. Mock OCR mode active.');
+
+  const modelName = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+  const client = new GoogleGenAI({ apiKey });
+
+  return { client, name: modelName };
 }
 
-module.exports = {
-  genAI,
-  geminiModel,
-};
+module.exports = { getGeminiClient };

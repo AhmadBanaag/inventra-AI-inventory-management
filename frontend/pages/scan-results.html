@@ -1,155 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scan Results & Verification — Inventra</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Scan | Inventra</title>
   <link rel="stylesheet" href="/css/main.css">
-  <style>
-    /* Two-column verification view */
-    .verification-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.6fr;
-      gap: var(--space-6);
-      align-items: start;
-    }
-
-    .image-inspector-card {
-      position: sticky;
-      top: 80px;
-    }
-
-    .sheet-preview-pane {
-      background-color: #0f172a;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 480px;
-      max-height: 600px;
-    }
-
-    .sheet-preview-pane img {
-      max-width: 100%;
-      max-height: 560px;
-      object-fit: contain;
-    }
-
-    .editable-input {
-      width: 100%;
-      min-height: 36px;
-      padding: 0 var(--space-2);
-      font-size: var(--font-size-sm);
-      border: 1px solid transparent;
-      border-radius: var(--radius-sm);
-      background: transparent;
-      color: var(--color-text-main);
-    }
-
-    .editable-input:hover {
-      border-color: var(--color-border);
-      background-color: var(--color-surface);
-    }
-
-    .editable-input:focus {
-      border-color: var(--color-border-focus);
-      background-color: var(--color-surface);
-      outline: none;
-    }
-
-    .editable-input.low-confidence {
-      background-color: var(--color-warning-subtle);
-      border-color: var(--color-warning);
-    }
-
-    @media (max-width: 960px) {
-      .verification-layout {
-        grid-template-columns: 1fr;
-      }
-      .image-inspector-card {
-        position: static;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/pages/scan-results.css">
 </head>
 <body>
   <div class="app-shell">
     <aside class="app-sidebar" id="app-sidebar"></aside>
-
     <div class="app-body">
       <header class="app-navbar" id="app-navbar"></header>
-
       <main class="app-main">
         <div class="page-header">
           <div>
-            <div class="flex items-center gap-3">
-              <span class="badge badge-warning">Verification Required</span>
-              <span id="scan-id-label" class="text-subtle" style="font-size: var(--font-size-xs);">Scan #---</span>
-            </div>
-            <h1 class="page-title" style="margin-top: var(--space-2);">Review & Verify Extracted Inventory</h1>
-            <p class="page-description">
-              Compare handwritten entries against AI-extracted items. Correct any inaccuracies before saving to the database.
-            </p>
+            <span class="badge badge-warning">Verification Required</span>
+            <h1 class="page-title results-title">Review Extracted Inventory</h1>
+            <p class="page-description">Compare every extracted field with your original sheet. Nothing is saved from this screen.</p>
           </div>
           <div class="page-actions">
-            <button type="button" id="discard-scan-btn" class="btn btn-outline-danger">Discard Scan</button>
-            <button type="button" id="confirm-save-btn" class="btn btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-              </svg>
-              <span>Save Verified Inventory</span>
-            </button>
+            <a href="/pages/scan-inventory.html" class="btn btn-secondary">Scan another sheet</a>
           </div>
         </div>
 
-        <div class="verification-layout">
-          <!-- Left: Sheet Image Inspector -->
-          <div class="card image-inspector-card">
-            <div class="card-header">
-              <h2 class="card-title">Handwritten Document Preview</h2>
-              <span class="text-subtle" style="font-size: var(--font-size-xs);">Reference View</span>
-            </div>
-            <div class="card-body" style="padding: var(--space-4);">
-              <div class="sheet-preview-pane">
-                <img id="verified-sheet-img" src="/assets/images/sample-sheet.png" alt="Uploaded handwritten sheet" onerror="this.src='https://placehold.co/600x800/e2e8f0/0f172a?text=Handwritten+Inventory+Sheet';">
-              </div>
-            </div>
+        <section class="card" aria-labelledby="items-title">
+          <div class="card-header">
+            <h2 class="card-title" id="items-title">Extracted items</h2>
+            <span id="model-label" class="text-subtle model-label"></span>
           </div>
-
-          <!-- Right: Editable Verification Table -->
-          <div class="card">
-            <div class="card-header">
-              <div class="flex items-center justify-between" style="width: 100%;">
-                <h2 class="card-title">Extracted Items (<span id="item-count">0</span>)</h2>
-                <button type="button" id="add-row-btn" class="btn btn-secondary btn-sm">
-                  + Add Missing Item
-                </button>
-              </div>
-            </div>
-            <div class="card-body" style="padding: 0;">
-              <div class="table-container" style="border: none; box-shadow: none;">
-                <table class="data-table" id="verification-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 35%;">Item Name</th>
-                      <th style="width: 25%;">Category</th>
-                      <th style="width: 15%;">Qty</th>
-                      <th style="width: 15%;">Unit Price</th>
-                      <th style="width: 10%; text-align: center;">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="verification-tbody"></tbody>
-                </table>
-              </div>
-            </div>
+          <div class="card-body">
+            <p id="results-message" class="results-message" role="status" aria-live="polite"></p>
+            <div id="results-container" class="table-container" hidden></div>
+            <p class="review-note">AI confidence is a rough estimate, not a probability. Verify all names, quantities, units, and categories against the original.</p>
           </div>
-        </div>
+        </section>
       </main>
     </div>
   </div>
 
-  <script src="/js/services/api.js"></script>
   <script src="/js/components/notifications.js"></script>
   <script src="/js/components/sidebar.js"></script>
   <script src="/js/components/navbar.js"></script>

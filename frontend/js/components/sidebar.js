@@ -9,7 +9,6 @@ function renderSidebar(activeKey = '') {
 
   const currentPath = window.location.pathname.toLowerCase();
 
-  // Navigation items definition
   const navItems = [
     { key: 'dashboard', label: 'Dashboard', href: '/pages/dashboard.html', icon: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z' },
     { key: 'inventory', label: 'My Inventory', href: '/pages/inventory.html', icon: 'M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z' },
@@ -29,7 +28,7 @@ function renderSidebar(activeKey = '') {
       <div class="nav-section-title">Navigation</div>
       <ul class="nav-list">
         ${navItems.map(item => {
-          const isActive = activeKey === item.key || currentPath.includes(item.href);
+          const isActive = activeKey === item.key || currentPath === item.href;
           return `
             <li class="nav-item">
               <a href="${item.href}" class="nav-link ${isActive ? 'active' : ''}">
@@ -48,7 +47,7 @@ function renderSidebar(activeKey = '') {
       <div class="nav-section-title">Resources</div>
       <ul class="nav-list">
         <li class="nav-item">
-          <a href="/pages/print-template.html" class="nav-link" target="_blank" rel="noopener">
+          <a href="/pages/inventory-template.html" class="nav-link" target="_blank" rel="noopener">
             <span class="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>

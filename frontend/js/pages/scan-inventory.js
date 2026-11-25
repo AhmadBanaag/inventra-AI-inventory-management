@@ -1,206 +1,164 @@
-/**
- * INVENTRA SCAN INVENTORY CONTROLLER (scan-inventory.js)
- */
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
+const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 let selectedFile = null;
+let previewUrl = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderSidebar('scan');
   renderNavbar('Scan Inventory');
-
+  renderSidebar('scan');
   setupUploadHandlers();
   setupGuidelinesModal();
 });
 
 function setupUploadHandlers() {
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('sheet-file-input');
-  const previewBox = document.getElementById('preview-box');
-  const previewImg = document.getElementById('preview-img');
-  const previewFilename = document.getElementById('preview-filename');
-  const clearBtn = document.getElementById('clear-file-btn');
-  const processBtn = document.getElementById('process-btn');
-  const form = document.getElementById('upload-form');
+  const dropzone = document.querySelector('#dropzone');
+  const fileInput = document.querySelector('#sheet-file-input');
+  const form = document.querySelector('#upload-form');
+  const clearButton = document.querySelector('#clear-file-btn');
 
-  if (!dropzone || !fileInput) return;
+  if (!dropzone || !fileInput || !form || !clearButton) return;
 
-  // Clicking the dropzone opens the guidelines modal first (if no file selected)
-  dropzone.addEventListener('click', () => {
-    if (!selectedFile) {
+  dropzone.addEventListener('click', () => openGuidelinesModal());
+  dropzone.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
       openGuidelinesModal();
-    } else {
-      fileInput.click();
     }
   });
 
-  dropzone.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (!selectedFile) {
-        openGuidelinesModal();
-      } else {
-        fileInput.click();
-      }
-    }
-  });
-
-  // Drag & drop listeners
-  ['dragenter', 'dragover'].forEach(name => {
-    dropzone.addEventListener(name, (e) => {
-      e.preventDefault();
+  ['dragenter', 'dragover'].forEach((eventName) => {
+    dropzone.addEventListener(eventName, (event) => {
+      event.preventDefault();
       dropzone.classList.add('dragover');
     });
   });
 
-  ['dragleave', 'drop'].forEach(name => {
-    dropzone.addEventListener(name, (e) => {
-      e.preventDefault();
+  ['dragleave', 'drop'].forEach((eventName) => {
+    dropzone.addEventListener(eventName, (event) => {
+      event.preventDefault();
       dropzone.classList.remove('dragover');
     });
   });
 
-  dropzone.addEventListener('drop', (e) => {
-    const files = e.dataTransfer?.files;
-    if (files && files.length > 0) {
-      handleFileSelected(files[0]);
-    }
+  dropzone.addEventListener('drop', (event) => {
+    const [file] = event.dataTransfer.files;
+    if (file) handleFileSelected(file);
   });
 
   fileInput.addEventListener('change', () => {
-    if (fileInput.files && fileInput.files.length > 0) {
-      handleFileSelected(fileInput.files[0]);
-    }
+    const [file] = fileInput.files;
+    if (file) handleFileSelected(file);
   });
 
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      selectedFile = null;
-      fileInput.value = '';
-      if (previewBox) previewBox.style.display = 'none';
-      if (processBtn) processBtn.disabled = true;
-    });
-  }
-
-  if (form) {
-    form.addEventListener('submit', handleUploadSubmit);
-  }
+  clearButton.addEventListener('click', clearSelectedFile);
+  form.addEventListener('submit', handleUploadSubmit);
 }
 
-/* ── Photo Guidelines Modal ── */
 function setupGuidelinesModal() {
-  const modal = document.getElementById('guidelines-modal');
-  const closeBtn = document.getElementById('guidelines-modal-close');
-  if (!modal) return;
+  const modal = document.querySelector('#guidelines-modal');
+  const closeButton = document.querySelector('#guidelines-modal-close');
+  const continueButton = document.querySelector('#guidelines-continue-btn');
+  const fileInput = document.querySelector('#sheet-file-input');
 
-  // Continue button
-  const continueBtn = document.getElementById('guidelines-continue-btn');
-  if (continueBtn) {
-    continueBtn.addEventListener('click', () => closeGuidelinesModal());
-  }
+  if (!modal || !closeButton || !continueButton || !fileInput) return;
 
-  // Close on X button
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => closeGuidelinesModal());
-  }
-
-  // Close on backdrop click
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeGuidelinesModal();
+  closeButton.addEventListener('click', closeGuidelinesModal);
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeGuidelinesModal();
   });
-
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeGuidelinesModal();
-    }
+  continueButton.addEventListener('click', () => {
+    closeGuidelinesModal();
+    fileInput.click();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal.hidden) closeGuidelinesModal();
   });
 }
 
 function openGuidelinesModal() {
-  const modal = document.getElementById('guidelines-modal');
-  if (modal) {
-    modal.classList.add('active');
-    // After the user reads guidelines, they can close and pick a file
-    const fileInput = document.getElementById('sheet-file-input');
-    // Add a one-time listener so after modal closes, the file picker opens
-    const handler = () => {
-      if (fileInput) fileInput.click();
-      modal.removeEventListener('modal-closed', handler);
-    };
-    modal.addEventListener('modal-closed', handler);
-  }
+  const modal = document.querySelector('#guidelines-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  modal.classList.add('active');
+  document.querySelector('#guidelines-continue-btn').focus();
 }
 
 function closeGuidelinesModal() {
-  const modal = document.getElementById('guidelines-modal');
-  if (modal) {
-    modal.classList.remove('active');
-    // Dispatch custom event so the file picker opens
-    modal.dispatchEvent(new CustomEvent('modal-closed'));
-  }
+  const modal = document.querySelector('#guidelines-modal');
+  if (!modal) return;
+  modal.classList.remove('active');
+  modal.hidden = true;
+  document.querySelector('#dropzone').focus();
 }
 
 function handleFileSelected(file) {
-  if (!file.type.startsWith('image/')) {
-    notify.error('Please upload an image file (JPG, PNG, or WEBP).');
+  if (!ALLOWED_TYPES.has(file.type)) {
+    showError('Upload a JPEG, PNG, or WebP image.');
     return;
   }
 
-  if (file.size > 10 * 1024 * 1024) {
-    notify.error('File size exceeds the 10MB limit.');
+  if (file.size > MAX_FILE_SIZE) {
+    showError('The image must be 8 MB or smaller.');
     return;
   }
 
   selectedFile = file;
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = URL.createObjectURL(file);
 
-  const previewBox = document.getElementById('preview-box');
-  const previewImg = document.getElementById('preview-img');
-  const previewFilename = document.getElementById('preview-filename');
-  const processBtn = document.getElementById('process-btn');
-
-  if (previewImg) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      previewImg.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  if (previewFilename) {
-    previewFilename.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-  }
-
-  if (previewBox) previewBox.style.display = 'block';
-  if (processBtn) processBtn.disabled = false;
+  document.querySelector('#preview-img').src = previewUrl;
+  document.querySelector('#preview-filename').textContent =
+    `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  document.querySelector('#preview-box').hidden = false;
+  document.querySelector('#process-btn').disabled = false;
+  clearStatus();
 }
 
-async function handleUploadSubmit(e) {
-  e.preventDefault();
+function clearSelectedFile() {
+  selectedFile = null;
+  document.querySelector('#sheet-file-input').value = '';
+  document.querySelector('#preview-img').removeAttribute('src');
+  document.querySelector('#preview-box').hidden = true;
+  document.querySelector('#process-btn').disabled = true;
+
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+  }
+
+  clearStatus();
+}
+
+async function handleUploadSubmit(event) {
+  event.preventDefault();
   if (!selectedFile) return;
 
-  const processBtn = document.getElementById('process-btn');
-  if (processBtn) {
-    processBtn.disabled = true;
-    processBtn.textContent = 'Uploading Sheet...';
-  }
-
-  const formData = new FormData();
-  formData.append('sheetImage', selectedFile);
+  const processButton = document.querySelector('#process-btn');
+  processButton.disabled = true;
+  processButton.textContent = 'Analyzing image...';
+  clearStatus();
 
   try {
-    const res = await api.upload('/scan/upload', formData);
-    const scanId = res.scanId || res.id;
-    notify.success('Sheet uploaded. Starting AI handwriting recognition...');
-    
-    // Redirect to dedicated AI processing transition screen
-    setTimeout(() => {
-      window.location.href = `/pages/ai-processing.html?scanId=${scanId}`;
-    }, 600);
-  } catch (err) {
-    notify.error(`Upload failed: ${err.message}`);
-    if (processBtn) {
-      processBtn.disabled = false;
-      processBtn.textContent = 'Process with Gemini AI';
-    }
+    const data = await window.InventraApi.extractInventory(selectedFile);
+    sessionStorage.setItem('inventra-scan-results', JSON.stringify(data));
+    window.location.href = '/pages/scan-results.html';
+  } catch (error) {
+    showError(error.message);
+    processButton.disabled = false;
+    processButton.textContent = 'Try extraction again';
   }
+}
+
+function showError(message) {
+  const status = document.querySelector('#status');
+  status.textContent = message;
+  status.classList.add('is-error');
+  if (window.notify) window.notify.error(message);
+}
+
+function clearStatus() {
+  const status = document.querySelector('#status');
+  status.textContent = '';
+  status.classList.remove('is-error');
 }

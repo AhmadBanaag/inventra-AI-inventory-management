@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventra — Printable Inventory Sheet</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      background-color: #f1f5f9;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* Screen Toolbar */
+    .template-toolbar {
+      max-width: 816px;
+      margin: 0 auto 16px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toolbar-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 13px;
+    }
+
+    .toolbar-info span {
+      color: #475569;
+      font-size: 12px;
+    }
+
+    .btn-print {
+      padding: 8px 16px;
+      background: #111827;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-print:hover {
+      background: #1f2937;
+    }
+
+    /* Printable Sheet (Letter width, dots inset for print safety) */
+    .sheet {
+      position: relative;
+      width: 100%;
+      max-width: 816px;
+      height: 891px;
+      margin: 0 auto;
+      padding: 44px 32px 0;
+      background: #ffffff;
+    }
+
+    /* Corner registration squares for photo capture */
+    .corner-mark {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #111827;
+    }
+
+    .top-left     { top: 16px;    left: 16px; }
+    .top-right    { top: 16px;    right: 16px; }
+    .bottom-left  { bottom: 16px; left: 16px; }
+    .bottom-right { bottom: 16px; right: 16px; }
+
+    /* Header & metadata */
+    .sheet-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #111827;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .sheet-subtitle {
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .meta-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 130px;
+    }
+
+    .meta-field.small {
+      min-width: 64px;
+    }
+
+    .meta-field label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #111827;
+    }
+
+    .write-line {
+      height: 20px;
+      border-bottom: 1.5px solid #111827;
+    }
+
+    .writing-tip {
+      margin: 10px 0 12px;
+      font-size: 11.5px;
+      color: #374151;
+    }
+
+    /* Inventory table */
+    .inventory-grid {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .inventory-grid th,
+    .inventory-grid td {
+      border: 1.5px solid #111827;
+      padding: 0 8px;
+      height: 34px;
+      vertical-align: middle;
+      font-size: 12px;
+    }
+
+    .inventory-grid th {
+      background: #f8fafc;
+      font-weight: 700;
+      text-align: left;
+      height: 32px;
+    }
+
+    .col-num {
+      width: 6%;
+      text-align: center !important;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    .col-item     { width: 34%; }
+    .col-category { width: 20%; }
+    .col-qty      { width: 10%; }
+    .col-unit     { width: 11%; }
+    .col-notes    { width: 19%; }
+
+    /* Print rules */
+    @media print {
+      @page {
+        margin: 0;
+      }
+
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .sheet {
+        max-width: none;
+        width: 100%;
+      }
+
+      .inventory-grid th {
+        background: #ffffff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Screen-only action bar (hidden when printing) -->
+  <div class="template-toolbar no-print">
+    <div class="toolbar-info">
+      <strong>Inventra Handwritten Inventory Sheet</strong>
+      <span>Print on A4 or Letter, write clearly in dark ink, then snap a full-sheet photo.</span>
+    </div>
+    <button type="button" id="printTemplateBtn" class="btn-print">Print Template</button>
+  </div>
+
+  <!-- Printable Sheet -->
+  <main class="sheet" aria-label="Printable Inventory Template">
+    <div class="corner-mark top-left" aria-hidden="true"></div>
+    <div class="corner-mark top-right" aria-hidden="true"></div>
+
+    <header class="sheet-header">
+      <div class="brand-block">
+        <span class="brand-name">INVENTRA</span>
+        <span class="sheet-subtitle">Write. Snap. Sort. — Inventory Count Sheet</span>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-field">
+          <label>Business / Store</label>
+          <div class="write-line"></div>
+        </div>
+        <div class="meta-field">
+          <label>Date</label>
+          <div class="write-line"></div>
+        </div>
+        <div class="meta-field small">
+          <label>Page</label>
+          <div class="write-line"></div>
+        </div>
+      </div>
+    </header>
+
+    <p class="writing-tip">
+      Tip: Use dark pen/marker, print one item per row, and keep numbers inside each box.
+    </p>
+
+    <table class="inventory-grid">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-item">Item / Product Name</th>
+          <th class="col-category">Category</th>
+          <th class="col-qty">Qty</th>
+          <th class="col-unit">Unit</th>
+          <th class="col-notes">Unit Cost / Notes</th>
+        </tr>
+      </thead>
+      <tbody id="templateRows"></tbody>
+    </table>
+
+    <div class="corner-mark bottom-left" aria-hidden="true"></div>
+    <div class="corner-mark bottom-right" aria-hidden="true"></div>
+  </main>
+
+  <script>
+    (function populateTemplateRows() {
+      const rowCount = 20;
+      const tbody = document.getElementById("templateRows");
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 1; i <= rowCount; i += 1) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="col-num">${i}</td>
+          <td class="col-item"></td>
+          <td class="col-category"></td>
+          <td class="col-qty"></td>
+          <td class="col-unit"></td>
+          <td class="col-notes"></td>
+        `;
+        fragment.appendChild(tr);
+      }
+
+      tbody.appendChild(fragment);
+
+      document.getElementById("printTemplateBtn").addEventListener("click", () => {
+        window.print();
+      });
+    })();
+  </script>
+</body>
+</html>

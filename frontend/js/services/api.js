@@ -11,7 +11,7 @@ class ApiClient {
    */
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-    
+
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -29,7 +29,7 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      
+
       // Attempt to parse JSON response
       let data = null;
       const contentType = response.headers.get('content-type');
@@ -41,7 +41,7 @@ class ApiClient {
       }
 
       if (!response.ok) {
-        const errorMessage = data?.error || data?.message || `Request failed with status ${response.status}`;
+        const errorMessage = data?.error?.message || data?.error || data?.message || `Request failed with status ${response.status}`;
         const error = new Error(errorMessage);
         error.status = response.status;
         error.data = data;
@@ -89,3 +89,17 @@ class ApiClient {
 
 // Export singleton instance to window for vanilla JS compatibility
 window.api = new ApiClient();
+
+async function extractInventory(imageFile) {
+  const formData = new FormData();
+  formData.append('image', imageFile);
+
+  const result = await window.api.upload('/ai/extract', formData);
+  if (!result || result.success !== true || !result.data) {
+    throw new Error('The server returned an invalid extraction response.');
+  }
+
+  return result.data;
+}
+
+window.InventraApi = { extractInventory };

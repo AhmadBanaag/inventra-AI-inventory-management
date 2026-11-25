@@ -1,0 +1,73 @@
+.results-title {
+  margin-top: var(--space-2);
+}
+
+.model-label {
+  font-size: var(--font-size-xs);
+}
+
+.results-message {
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+}
+
+#results-container[hidden] {
+  display: none;
+}
+
+.results-table {
+  min-width: 900px;
+}
+
+.results-table input,
+.results-table select {
+  width: 100%;
+  min-width: 100px;
+  min-height: 38px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-main);
+  font: inherit;
+}
+
+.results-table input:focus,
+.results-table select:focus {
+  border-color: var(--color-border-focus);
+  outline: none;
+}
+
+.results-table .needs-review {
+  background: var(--color-warning-subtle);
+}
+
+.results-table small {
+  display: block;
+  max-width: 220px;
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+  white-space: normal;
+}
+
+.review-badge {
+  color: var(--color-warning-text);
+}
+
+.clear-badge {
+  color: var(--color-success-text);
+}
+
+.confidence-low {
+  color: var(--color-warning-text);
+}
+
+.confidence-high {
+  color: var(--color-success-text);
+}
+
+.review-note {
+  margin-top: var(--space-5);
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-xs);
+}
