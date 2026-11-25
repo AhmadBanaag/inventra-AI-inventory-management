@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scan Inventory | Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/pages/scan-inventory.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Scan Inventory Sheet</h1>
+            <p class="page-description">Upload a photo of your handwritten count sheet for AI handwriting extraction.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/pages/inventory-template.html" target="_blank" rel="noopener" class="btn btn-secondary">
+              <span aria-hidden="true">▤</span>
+              <span>Print Blank Template</span>
+            </a>
+          </div>
+        </div>
+
+        <section class="card" aria-labelledby="upload-title">
+          <div class="card-header">
+            <h2 class="card-title" id="upload-title">Upload Completed Sheet</h2>
+          </div>
+          <div class="card-body">
+            <form id="upload-form">
+              <input type="file" id="sheet-file-input" accept="image/jpeg,image/png,image/webp" hidden>
+
+              <div class="upload-dropzone" id="dropzone" role="button" tabindex="0" aria-label="Choose or drop an inventory photo">
+                <div class="upload-icon" aria-hidden="true">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong class="upload-title">Click to upload or drag and drop</strong>
+                  <p class="upload-help">JPG, PNG, or WebP (maximum 8 MB)</p>
+                </div>
+              </div>
+
+              <div class="preview-container" id="preview-box" hidden>
+                <img id="preview-img" class="preview-image" alt="Preview of the selected inventory sheet">
+                <div class="preview-details">
+                  <span id="preview-filename" class="text-muted"></span>
+                  <button type="button" id="clear-file-btn" class="btn btn-outline-danger btn-sm">Remove image</button>
+                </div>
+              </div>
+
+              <p id="status" class="scan-status" role="status" aria-live="polite"></p>
+              <button type="submit" id="process-btn" class="btn btn-primary btn-full" disabled>
+                Process with Gemini AI
+              </button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="guidelines-modal" hidden>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="guidelines-modal-title">
+      <header class="modal-header">
+        <h2 id="guidelines-modal-title">Photo Guidelines for Best AI Accuracy</h2>
+        <button type="button" class="modal-close-btn" id="guidelines-modal-close" aria-label="Close guidelines">×</button>
+      </header>
+      <div class="modal-body">
+        <ul class="guidelines-list">
+          <li><span class="badge badge-success" aria-hidden="true">✓</span><span><strong>High-contrast ink:</strong> Use dark blue or black ink.</span></li>
+          <li><span class="badge badge-success" aria-hidden="true">✓</span><span><strong>Even lighting:</strong> Avoid shadows across the table.</span></li>
+          <li><span class="badge badge-success" aria-hidden="true">✓</span><span><strong>Flat surface:</strong> Keep the camera parallel to the sheet.</span></li>
+          <li><span class="badge badge-success" aria-hidden="true">✓</span><span><strong>All borders visible:</strong> Include the full sheet in the photo.</span></li>
+        </ul>
+        <p class="review-notice">AI results can be wrong. Review every field against the original sheet; this scan does not save inventory.</p>
+        <button type="button" id="guidelines-continue-btn" class="btn btn-primary btn-full">Continue to choose photo</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/scan-inventory.js"></script>
+</body>
+</html>

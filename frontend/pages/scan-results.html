@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Scan | Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/pages/scan-results.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <span class="badge badge-warning">Verification Required</span>
+            <h1 class="page-title results-title">Review Extracted Inventory</h1>
+            <p class="page-description">Compare every extracted field with your original sheet. Nothing is saved from this screen.</p>
+          </div>
+          <div class="page-actions">
+            <a href="/pages/scan-inventory.html" class="btn btn-secondary">Scan another sheet</a>
+          </div>
+        </div>
+
+        <section class="card" aria-labelledby="items-title">
+          <div class="card-header">
+            <h2 class="card-title" id="items-title">Extracted items</h2>
+            <span id="model-label" class="text-subtle model-label"></span>
+          </div>
+          <div class="card-body">
+            <p id="results-message" class="results-message" role="status" aria-live="polite"></p>
+            <div id="results-container" class="table-container" hidden></div>
+            <p class="review-note">AI confidence is a rough estimate, not a probability. Verify all names, quantities, units, and categories against the original.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/scan-results.js"></script>
+</body>
+</html>
