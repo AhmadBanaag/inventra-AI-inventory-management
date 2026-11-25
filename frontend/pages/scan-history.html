@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan History — Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Scan History</h1>
+            <p class="page-description">Audit log of all uploaded inventory count sheets and verification statuses.</p>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+          <div class="card-body" style="padding: var(--space-4);">
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center;">
+              <!-- Search -->
+              <input
+                type="search"
+                id="history-search"
+                class="form-input"
+                placeholder="Search by scan ID or status..."
+                style="flex: 1; min-width: 200px; max-width: 360px;"
+              >
+
+              <!-- Date Filter -->
+              <select id="history-date-filter" class="form-select" style="max-width: 200px;">
+                <option value="">All Dates</option>
+                <option value="today">Today</option>
+                <option value="7days">Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="90days">Last 90 Days</option>
+              </select>
+
+              <span id="history-count-label" class="text-muted" style="font-size: var(--font-size-sm); margin-left: auto;">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div id="history-loading-state" class="state-box">
+            <div class="spinner"></div>
+            <div class="state-title">Loading history...</div>
+          </div>
+
+          <div id="history-empty-state" class="state-box" style="display: none;">
+            <div class="state-title">No scans recorded yet</div>
+            <div class="state-description">Upload your first handwritten count sheet to see audit history here.</div>
+          </div>
+
+          <table class="data-table" id="history-table" style="display: none;">
+            <thead>
+              <tr>
+                <th>Scan Date</th>
+                <th>Sheet Identifier</th>
+                <th>Items Detected</th>
+                <th>Items Verified</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/scan-history.js"></script>
+</body>
+</html>

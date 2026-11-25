@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Inventra</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+
+    <div class="app-body">
+      <header class="app-navbar" id="app-navbar"></header>
+
+      <main class="app-main">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Settings</h1>
+            <p class="page-description">Manage store profile, inventory thresholds, and system preferences.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" id="save-settings-btn" class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6);">
+          <!-- Store Profile Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Store Profile</h2>
+            </div>
+            <div class="card-body">
+              <form id="store-profile-form">
+                <div class="form-group">
+                  <label for="store-name" class="form-label">Business Name <span class="required">*</span></label>
+                  <input type="text" id="store-name" class="form-input" placeholder="e.g. Apex Hardware Store" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="currency-symbol" class="form-label">Currency Symbol</label>
+                  <select id="currency-symbol" class="form-select">
+                    <option value="$">$ (USD)</option>
+                    <option value="₱">₱ (PHP)</option>
+                    <option value="€">€ (EUR)</option>
+                    <option value="£">£ (GBP)</option>
+                    <option value="¥">¥ (JPY)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="default-threshold" class="form-label">Default Low Stock Alert Threshold</label>
+                  <input type="number" id="default-threshold" class="form-input" min="1" value="5">
+                  <span class="form-hint">Items with quantity equal to or below this amount will trigger a low stock alert.</span>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- AI Scanning & OCR Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">AI Handwriting Recognition</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="default-category" class="form-label">Default Fallback Category</label>
+                <input type="text" id="default-category" class="form-input" value="General">
+                <span class="form-hint">Assigned if Gemini cannot determine category from handwritten notes.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="confidence-flag" class="form-label">Flag Low-Confidence Items</label>
+                <select id="confidence-flag" class="form-select">
+                  <option value="true">Yes, visually highlight uncertain items in verification</option>
+                  <option value="false">No, display all without highlight</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-top: var(--space-6);">
+                <label class="form-label">System Diagnostics</label>
+                <p class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--space-3);">
+                  Check connectivity between the local backend server, Supabase, and Gemini API.
+                </p>
+                <button type="button" id="test-connection-btn" class="btn btn-secondary btn-sm">
+                  Run Diagnostics Check
+                </button>
+                <div id="diagnostic-results" style="margin-top: var(--space-3); font-size: var(--font-size-xs); display: none;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/services/api.js"></script>
+  <script src="/js/components/notifications.js"></script>
+  <script src="/js/components/sidebar.js"></script>
+  <script src="/js/components/navbar.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/pages/settings.js"></script>
+</body>
+</html>

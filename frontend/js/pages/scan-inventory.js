@@ -17,6 +17,8 @@ function setupUploadHandlers() {
   const form = document.querySelector('#upload-form');
   const clearButton = document.querySelector('#clear-file-btn');
 
+  if (!dropzone || !fileInput || !form || !clearButton) return;
+
   dropzone.addEventListener('click', () => openGuidelinesModal());
   dropzone.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -57,17 +59,18 @@ function setupGuidelinesModal() {
   const modal = document.querySelector('#guidelines-modal');
   const closeButton = document.querySelector('#guidelines-modal-close');
   const continueButton = document.querySelector('#guidelines-continue-btn');
+  const fileInput = document.querySelector('#sheet-file-input');
+
+  if (!modal || !closeButton || !continueButton || !fileInput) return;
 
   closeButton.addEventListener('click', closeGuidelinesModal);
   modal.addEventListener('click', (event) => {
     if (event.target === modal) closeGuidelinesModal();
   });
-
   continueButton.addEventListener('click', () => {
     closeGuidelinesModal();
-    document.querySelector('#sheet-file-input').click();
+    fileInput.click();
   });
-
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modal.hidden) closeGuidelinesModal();
   });
@@ -75,6 +78,7 @@ function setupGuidelinesModal() {
 
 function openGuidelinesModal() {
   const modal = document.querySelector('#guidelines-modal');
+  if (!modal) return;
   modal.hidden = false;
   modal.classList.add('active');
   document.querySelector('#guidelines-continue-btn').focus();
@@ -82,6 +86,7 @@ function openGuidelinesModal() {
 
 function closeGuidelinesModal() {
   const modal = document.querySelector('#guidelines-modal');
+  if (!modal) return;
   modal.classList.remove('active');
   modal.hidden = true;
   document.querySelector('#dropzone').focus();

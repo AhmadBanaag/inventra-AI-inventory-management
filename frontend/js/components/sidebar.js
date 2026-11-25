@@ -7,13 +7,19 @@ function renderSidebar(activeKey = '') {
   const container = document.getElementById('app-sidebar');
   if (!container) return;
 
+  const currentPath = window.location.pathname.toLowerCase();
+
   const navItems = [
+    { key: 'dashboard', label: 'Dashboard', href: '/pages/dashboard.html', icon: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z' },
+    { key: 'inventory', label: 'My Inventory', href: '/pages/inventory.html', icon: 'M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z' },
     { key: 'scan', label: 'Scan Inventory', href: '/pages/scan-inventory.html', icon: 'M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm14 0h-4v2h2v4h2v-4h2v-2h-2zm-4 4h2v2h-2z' },
+    { key: 'history', label: 'Scan History', href: '/pages/scan-history.html', icon: 'M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z' },
+    { key: 'settings', label: 'Settings', href: '/pages/settings.html', icon: 'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z' },
   ];
 
   const html = `
     <div class="sidebar-header">
-      <a href="/" class="sidebar-brand">
+      <a href="/pages/dashboard.html" class="sidebar-brand">
         <span class="brand-title">Inventra</span>
       </a>
     </div>
@@ -22,7 +28,7 @@ function renderSidebar(activeKey = '') {
       <div class="nav-section-title">Navigation</div>
       <ul class="nav-list">
         ${navItems.map(item => {
-          const isActive = activeKey === item.key;
+          const isActive = activeKey === item.key || currentPath === item.href;
           return `
             <li class="nav-item">
               <a href="${item.href}" class="nav-link ${isActive ? 'active' : ''}">
