@@ -109,8 +109,8 @@ function validateProductUpdate(req, res, next) {
 /**
  * Validates batch items submitted for scan verification
  */
-function validateVerifiedScan(req, res, next) {
-  const { items } = req.body;
+function validateVerifiedScan(req, res, next, { requireUnitPrice = false } = {}) {
+  const { items } = req.body || {};
 
   if (!items || !Array.isArray(items) || items.length === 0) {
     return error(res, 'Verification payload must be a non-empty array of items.', 400);
@@ -119,6 +119,11 @@ function validateVerifiedScan(req, res, next) {
   const errors = [];
 
   items.forEach((item, index) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      errors.push({ index, field: 'item', message: 'Each item must be an object.' });
+      return;
+    }
+
     if (!item.name || typeof item.name !== 'string' || item.name.trim().length === 0) {
       errors.push({ index, field: 'name', message: 'Item name is required.' });
     }
@@ -128,9 +133,11 @@ function validateVerifiedScan(req, res, next) {
       errors.push({ index, field: 'quantity', message: 'Quantity must be a non-negative integer.' });
     }
 
-    if (item.unit_price !== undefined && item.unit_price !== null && item.unit_price !== '') {
+    if (requireUnitPrice && (item.unit_price === undefined || item.unit_price === null || item.unit_price === '')) {
+      errors.push({ index, field: 'unit_price', message: 'Unit price is required.' });
+    } else if (item.unit_price !== undefined && item.unit_price !== null && item.unit_price !== '') {
       const price = Number(item.unit_price);
-      if (isNaN(price) || price < 0) {
+      if (!Number.isFinite(price) || price < 0) {
         errors.push({ index, field: 'unit_price', message: 'Unit price must be a non-negative number.' });
       }
     }

@@ -17,9 +17,10 @@
           <div>
             <span class="badge badge-warning">Verification Required</span>
             <h1 class="page-title results-title">Review Extracted Inventory</h1>
-            <p class="page-description">Compare every extracted field with your original sheet. Nothing is saved from this screen.</p>
+            <p class="page-description">Check every extracted field and price against your original sheet before saving.</p>
           </div>
           <div class="page-actions">
+            <button type="button" id="add-product-btn" class="btn btn-secondary">Add missing product</button>
             <a href="/pages/scan-inventory.html" class="btn btn-secondary">Scan another sheet</a>
           </div>
         </div>
@@ -32,13 +33,18 @@
           <div class="card-body">
             <p id="results-message" class="results-message" role="status" aria-live="polite"></p>
             <div id="results-container" class="table-container" hidden></div>
-            <p class="review-note">AI confidence is a rough estimate, not a probability. Verify all names, quantities, units, and categories against the original.</p>
+            <p class="review-note">AI confidence is a rough estimate, not a probability. Verify all fields against the sheet. Unit prices are extracted only when clearly written; confirm or enter every price before saving. Existing products are restocked by adding the scanned quantity.</p>
+            <div class="results-actions">
+              <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
+              <button type="button" id="save-results-btn" class="btn btn-primary" disabled>Save verified products to inventory</button>
+            </div>
           </div>
         </section>
       </main>
     </div>
   </div>
 
+  <script src="/js/services/api.js"></script>
   <script src="/js/components/notifications.js"></script>
   <script src="/js/components/sidebar.js"></script>
   <script src="/js/components/navbar.js"></script>

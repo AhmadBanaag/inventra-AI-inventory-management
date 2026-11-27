@@ -16,7 +16,7 @@
 }
 
 .results-table {
-  min-width: 900px;
+  min-width: 1120px;
 }
 
 .results-table input,
@@ -70,4 +70,40 @@
   margin-top: var(--space-5);
   color: var(--color-text-subtle);
   font-size: var(--font-size-xs);
+}
+
+.results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.save-status {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.save-status:empty {
+  display: none;
+}
+
+.results-table .price-input {
+  min-width: 110px;
+}
+
+.results-table .remove-row-btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .results-actions {
+    align-items: stretch;
+  }
+
+  .results-actions .btn {
+    width: 100%;
+  }
 }

@@ -201,7 +201,9 @@ async function batchUpsertVerifiedProducts(items, mode = 'additive') {
       const updatePayload = {
         quantity: newQuantity,
         category: item.category || existing.category,
-        unit_price: item.unit_price !== undefined && item.unit_price > 0 ? Number(item.unit_price) : existing.unit_price,
+        unit_price: item.unit_price !== undefined && item.unit_price !== null && item.unit_price !== ''
+          ? Number(item.unit_price)
+          : existing.unit_price,
         updated_at: new Date().toISOString(),
       };
 
