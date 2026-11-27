@@ -11,12 +11,14 @@ test('marks incomplete and low-confidence extraction fields for review', () => {
     name: 'Apples',
     quantity: null,
     unit: '',
+    unit_price: null,
     category: 'Produce',
     confidence: 0.6,
   });
 
   assert.equal(item.needsReview, true);
   assert.match(item.reviewReason, /Quantity needs review/);
+  assert.match(item.reviewReason, /Unit price needs review/);
   assert.match(item.reviewReason, /Unit needs review/);
   assert.match(item.reviewReason, /below 75%/);
 });
@@ -26,6 +28,7 @@ test('normalizes out-of-range confidence and unknown categories conservatively',
     name: 'Rice',
     quantity: 3,
     unit: 'bags',
+    unit_price: 2.5,
     category: 'Unlisted category',
     confidence: 1.5,
   });
@@ -38,6 +41,7 @@ test('normalizes out-of-range confidence and unknown categories conservatively',
     name: 'Pancit Canton',
     quantity: 1,
     unit: 'pcs',
+    unit_price: 18,
     category: 'Instant Noodles',
     confidence: 0.9,
   }).category, 'Instant Noodles');
@@ -66,6 +70,7 @@ test('sends the image to the model and returns reviewable candidates', async () 
               name: 'Canned tomatoes',
               quantity: 12,
               unit: 'cans',
+              unit_price: 1.75,
               category: 'Food',
               confidence: 0.94,
               needsReview: false,
@@ -93,7 +98,9 @@ test('sends the image to the model and returns reviewable candidates', async () 
   assert.equal(request.config.responseMimeType, 'application/json');
   assert.equal(request.config.temperature, 0);
   assert.ok(request.config.responseSchema.properties.items);
+  assert.equal(request.config.responseSchema.properties.items.items.properties.unit_price.type, 'number');
   assert.equal(result.items[0].name, 'Canned tomatoes');
+  assert.equal(result.items[0].unit_price, 1.75);
   assert.equal(result.requiresReview, true);
   assert.ok(result.categories.includes('Food'));
 });
