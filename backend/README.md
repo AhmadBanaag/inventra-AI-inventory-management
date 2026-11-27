@@ -15,4 +15,10 @@ Confidence is a rough model estimate rather than a calibrated probability; every
 extracted field must be checked against the source sheet. The backend checks the
 uploaded file signature as well as its declared image type.
 
+The review page can also submit manually verified candidates to
+`POST /api/ai/verify`. It requires product names, whole-number quantities, and
+unit prices. Existing products are matched by name and restocked additively;
+new products are added to the inventory. No extracted data is saved before the
+user explicitly submits the verified results.
+
 Run the unit and endpoint tests with `node --test`.

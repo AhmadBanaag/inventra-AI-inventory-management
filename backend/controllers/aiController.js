@@ -1,6 +1,7 @@
 const { getGeminiClient } = require('../config/gemini');
 const { extractInventoryFromImage } = require('../services/geminiService');
 const { detectImageMimeType } = require('../utils/image');
+const productService = require('../services/productService');
 
 async function extractInventory(req, res, next) {
   if (!req.file) {
@@ -49,4 +50,19 @@ async function extractInventory(req, res, next) {
   }
 }
 
-module.exports = { extractInventory };
+async function saveVerifiedInventory(req, res, next) {
+  try {
+    const summary = await productService.batchUpsertVerifiedProducts(req.body.items);
+    res.json({
+      success: true,
+      data: {
+        message: `${req.body.items.length} verified items saved to inventory.`,
+        summary,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { extractInventory, saveVerifiedInventory };

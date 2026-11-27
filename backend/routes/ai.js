@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const { extractInventory } = require('../controllers/aiController');
+const { extractInventory, saveVerifiedInventory } = require('../controllers/aiController');
+const { validateVerifiedScan } = require('../middleware/validator');
 
 const router = express.Router();
 const supportedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -21,5 +22,8 @@ const upload = multer({
 });
 
 router.post('/extract', upload.single('image'), extractInventory);
+router.post('/verify', (req, res, next) => {
+  validateVerifiedScan(req, res, next, { requireUnitPrice: true });
+}, saveVerifiedInventory);
 
 module.exports = router;

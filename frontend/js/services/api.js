@@ -102,4 +102,13 @@ async function extractInventory(imageFile) {
   return result.data;
 }
 
-window.InventraApi = { extractInventory };
+async function saveVerifiedInventory(items) {
+  const result = await window.api.post('/ai/verify', { items });
+  if (!result || result.success !== true || !result.data || !result.data.summary) {
+    throw new Error('The server returned an invalid inventory save response.');
+  }
+
+  return result.data;
+}
+
+window.InventraApi = { extractInventory, saveVerifiedInventory };

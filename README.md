@@ -49,9 +49,9 @@ Store managers and staff fill out a standardized printable inventory count sheet
 - **Summary of Additions:**
   - **Shared Design System:** Centralized design tokens ([variables.css](file:///frontend/css/variables.css)), app layout shell ([layout.css](file:///frontend/css/layout.css)), reusable UI components ([components.css](file:///frontend/css/components.css)), and main stylesheet ([main.css](file:///frontend/css/main.css)).
   - **Client-Side Framework Layer:** Built the centralized Fetch API wrapper ([api.js](file:///frontend/js/services/api.js)), dynamic sidebar navigation ([sidebar.js](file:///frontend/js/components/sidebar.js)), top navbar with breadcrumbs and live health indicators ([navbar.js](file:///frontend/js/components/navbar.js)), and accessible toast notifications ([notifications.js](file:///frontend/js/components/notifications.js)).
-  - **Frontend Pages:** Implemented the public Landing Page ([index.html](file:///frontend/index.html)), Store Settings ([settings.html](file:///frontend/pages/settings.html)), and browser-printable Inventory Template ([print-template.html](file:///frontend/pages/print-template.html)).
+  - **Frontend Pages:** Implemented the public Landing Page ([index.html](file:///frontend/index.html)), Store Settings ([settings.html](file:///frontend/pages/settings.html)), and browser-printable Inventory Template ([inventory-template.html](file:///frontend/pages/inventory-template.html)).
   - **Backend Track Pages:** Built the live operational Dashboard ([dashboard.html](file:///frontend/pages/dashboard.html)), My Inventory catalog ([inventory.html](file:///frontend/pages/inventory.html)), Product Details view ([product-details.html](file:///frontend/pages/product-details.html)), and Add/Edit Product form ([product-form.html](file:///frontend/pages/product-form.html)).
-  - **AI Track Pages:** Built the image upload portal ([scan-inventory.html](file:///frontend/pages/scan-inventory.html)), multi-step AI Processing transition screen ([ai-processing.html](file:///frontend/pages/ai-processing.html)), side-by-side Scan Verification screen ([scan-results.html](file:///frontend/pages/scan-results.html)), and historical Scan Audit log ([scan-history.html](file:///frontend/pages/scan-history.html)).
+  - **AI Track Pages:** Built the image upload portal ([scan-inventory.html](file:///frontend/pages/scan-inventory.html)), multi-step AI Processing transition screen ([ai-processing.html](file:///frontend/pages/ai-processing.html)), editable Scan Verification screen ([scan-results.html](file:///frontend/pages/scan-results.html)), and historical Scan Audit log ([scan-history.html](file:///frontend/pages/scan-history.html)).
   - **Backend REST Services:** Express server ([server.js](file:///backend/server.js)), route handlers for products ([products.js](file:///backend/routes/products.js)), dashboard metrics ([dashboard.js](file:///backend/routes/dashboard.js)), file upload and OCR verification ([scan.js](file:///backend/routes/scan.js)), and multimodal Gemini integration ([gemini.js](file:///backend/services/gemini.js)).
   - **Database Schema:** Created PostgreSQL / Supabase migration schema ([schema.sql](file:///backend/database/schema.sql)) with tables for `products`, `scans`, `scan_items`, and `settings`.
   - **Verification:** Verified syntax across all 21 JavaScript files and validated all 16 HTTP routes and page views.
@@ -82,7 +82,7 @@ The application is structured into three clear developer tracks:
 ### 1. Frontend Track
 - **Landing Page (`frontend/index.html`):** Public marketing view highlighting the "Write. Snap. Sort." flow and quick launch button.
 - **Settings (`frontend/pages/settings.html`):** Manage business name, currency symbol, default low-stock thresholds, and system health tests.
-- **Printable Template (`frontend/pages/print-template.html`):** Browser-printable A4/Letter count sheet with high-contrast guide lines optimized for physical counting and handwriting recognition.
+- **Printable Template (`frontend/pages/inventory-template.html`):** Browser-printable A4/Letter count sheet with high-contrast guide lines optimized for physical counting and handwriting recognition.
 - **Shared Components:**
   - `frontend/js/components/sidebar.js`: Shared navigation with active route highlights.
   - `frontend/js/components/navbar.js`: Breadcrumb trail and live API connectivity indicator.
@@ -98,7 +98,7 @@ The application is structured into three clear developer tracks:
 ### 3. AI Scanning Track
 - **Scan Inventory (`frontend/pages/scan-inventory.html`):** Photo capture best practices, drag-and-drop image upload, and file preview container.
 - **AI Processing (`frontend/pages/ai-processing.html`):** Multi-step visual transition screen tracking upload, border detection, Gemini OCR analysis, and JSON formatting.
-- **Scan Results & Verification (`frontend/pages/scan-results.html`):** Mandatory review screen. Displays uploaded handwritten document side-by-side with an editable verification table. Users can edit quantities, names, categories, prices, add missing rows, or remove misread entries before committing to the database.
+- **Scan Results & Verification (`frontend/pages/scan-results.html`):** Mandatory review screen. Users can edit quantities, names, categories, and prices, add missing rows, or remove misread entries before explicitly saving verified results to inventory.
 - **Scan History (`frontend/pages/scan-history.html`):** Audit trail of previous scans and verification statuses.
 
 ---
@@ -120,7 +120,7 @@ inventra/
 │   │   ├── scan-results.html            # Side-by-side verification table
 │   │   ├── scan-history.html            # Audit history of previous scans
 │   │   ├── settings.html                # Store & OCR threshold settings
-│   │   └── print-template.html          # Standardized printable count sheet
+│   │   └── inventory-template.html     # Standardized printable count sheet
 │   │
 │   ├── assets/                          # Images, logos, and UI icons
 │   │   ├── images/
